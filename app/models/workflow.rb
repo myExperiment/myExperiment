@@ -42,7 +42,7 @@ class Workflow < ActiveRecord::Base
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
 
-  acts_as_site_entity :owner_text => 'Original Uploader'
+  acts_as_site_entity :owner_text => 'Uploader'
 
   acts_as_contributable
   
@@ -141,9 +141,15 @@ class Workflow < ActiveRecord::Base
     if self.title.blank?
       self.unique_name = "#{salt}_#{salt2}"        
     else
-      self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+      self.unique_name = "#{sanitized_title.downcase}_#{salt}"
     end
   end
+
+  def sanitized_title
+    self.title.gsub(/[^\w\.\-]/,'_')
+  end
+
+
   
   def self.extract_metadata(opts = {})
 
@@ -268,31 +274,19 @@ class Workflow < ActiveRecord::Base
 
     return version_processor.get_workflow_model_input_ports
   end
-  
-  # End acts_as_runnable overridden methods
-
-  def filename_aux(record)
-
-    extension = ""
-
-    if record.processor_class && record.processor_class.default_file_extension
-      extension = ".#{record.processor_class.default_file_extension}"
-    end
-
-    if record.file_ext
-      extension = ".#{record.file_ext}"
-    end
-
-    extension
-  end
 
   def filename(version=nil)
+    workflow_version = version.blank? ? self : (self.find_version(version) || self)
+    "#{sanitized_title}-v#{version}#{file_extension(workflow_version)}"
+  end
 
-    if version.blank?
-      "#{unique_name}#{filename_aux(self)}"
+  def file_extension(record)
+    if record.processor_class && record.processor_class.default_file_extension
+      ".#{record.processor_class.default_file_extension}"
+    elsif record.file_ext
+      ".#{record.file_ext}"
     else
-      workflow_version = self.find_version(version)
-      "#{workflow_version.unique_name}#{filename_aux(workflow_version)}"
+      ".txt"
     end
   end
   

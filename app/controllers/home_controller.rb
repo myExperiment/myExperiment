@@ -14,11 +14,7 @@ class HomeController < ApplicationController
 
   def front_page
     respond_to do |format|
-      if logged_in?
-        format.html { redirect_to home_url }
-      else
-        format.html { render :file => 'public/front_page.html', :layout => false }
-      end
+      format.html { redirect_to home_url }
     end
   end
   

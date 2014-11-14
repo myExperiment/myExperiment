@@ -3,9 +3,9 @@
 
   <li><%= name(@user) %></li>
     
-  <li><%= link_to 'Memberships', user_memberships_path(@user) %></li>
+  <li><%= link_to 'Groups', user_memberships_path(@user) %></li>
 <% else %>
-  <li><%= link_to 'Memberships', url_for(:controller => :memberships) %>
+  <li><%= link_to 'Groups', url_for(:controller => :memberships) %>
 <% end %>
 
 <% if ["show"].include? controller.action_name.to_s %>

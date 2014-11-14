@@ -27,8 +27,8 @@ function updateTagList() {
 
     for (var i = 0; i < tags.length; i++)
       markup += tags[i] +
-        '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i].replace("'", "\\'") +
-        '\'); return false;">delete</a>]</small><br />';
+        ' <a href="" onclick="javascript:deleteTag(\'' + tags[i].replace("'", "\\'") +
+        '\'); return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove tag"/></a><br />';
   }
 
   document.getElementById('tags_current_list').innerHTML = markup;
@@ -102,20 +102,20 @@ function updateAuthorList() {
 	
 	if (credit_me)
 	{
-		markup += 'Me&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'me\', null); ' +
-    		'return false;">delete</a>]</small><br/>';
+		markup += 'Me <a href="" onclick="javascript:deleteAuthor(\'me\', null); ' +
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	for (var key in credit_users)
 	{
-		markup += 'User: ' + credit_users[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'user\', ' + key + '); ' +
-    		'return false;">delete</a>]</small><br/>';
+		markup += 'User: ' + credit_users[key] + ' <a href="" onclick="javascript:deleteAuthor(\'user\', ' + key + '); ' +
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	for (var key in credit_groups)
 	{
-		markup += 'Group: ' + credit_groups[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'group\', ' + key + '); ' +
-    		'return false;">delete</a>]</small><br/>';
+		markup += 'Group: ' + credit_groups[key] + ' <a href="" onclick="javascript:deleteAuthor(\'group\', ' + key + '); ' +
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	if (markup == '')

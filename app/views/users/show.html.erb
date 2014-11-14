@@ -54,7 +54,7 @@
 					<li><%= icon('edit', edit_user_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
 			  <li><%= icon('history', user_userhistory_path(@user), nil, nil, 'View My History')%></li>
-        <li><%= memberships_link(current_user, "My Memberships") %></li>
+        <li><%= memberships_link(current_user, "My Groups") %></li>
         <li><%= icon('network', user_friendships_path(@user), nil, nil, 'My Friendships')%></li>
 	    <% end %>
 
@@ -389,7 +389,7 @@
     <% end %>
 
     <% if mine? @user %>
-        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', user_memberships_path(@user) %> ]</p>
+        <p style="color: #666666;">[ <%= link_to 'View all Groups in detail', user_memberships_path(@user) %> ]</p>
     <% end %>
   </div>
 </div>

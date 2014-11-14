@@ -1,6 +1,55 @@
 /* Supplementary stylesheet for the template layout. Requires main myExperiment stylesheet. */
 
-/* Changes the colour of the sidebar/searchbar (normally blue): */
 #myexp_searchbar, #myexp_sidebar, .pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
-  background-color: #3999b9;
+    background-color: #3999b9;
+}
+
+.navbar {
+    background-color: #1d82a4;
+    margin-bottom: 0;
+    box-shadow: 0 -1px 8px #000;
+    border-radius: 0;
+    border-color: #5aaac5;
+}
+
+#site_info_links {
+    background-color: #64b1cb;
+    border-color: #5aaac5;
+}
+
+#site_info_links a {
+    color: white;
+}
+
+.navbar .nav > li > a {
+    color: white;
+}
+
+.navbar .nav > li > a:hover {
+    color: white;
+}
+
+.nav > li > a {
+    text-shadow: 2px 2px 2px #333;
+}
+
+.nav > li > a span {
+    text-shadow: none;
+}
+
+span.divider {
+    color: #1d82a4
+}
+
+#selected_tabnav a,
+.nav > li > a:hover,
+.nav > li > a:focus,
+.nav > li > a:active,
+.navbar-myexp .navbar-nav > .active > a, .navbar-myexp .navbar-nav > .active > a:hover,
+.navbar-myexp .navbar-nav > .active > a:focus,
+.navbar-myexp .navbar-nav > .open > a,
+.navbar-myexp .navbar-nav > .open > a:hover,
+.navbar-myexp .navbar-nav > .open > a:focus {
+    background-color: #449fbd;
+    color: white;
 }

@@ -56,7 +56,7 @@ module ApplicationHelper
       rtn = Time.at(old_dt.time)
     end
     
-    return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
+    return long ? rtn.strftime("%A %d %B %Y %H:%M:%S (%Z)") : rtn.strftime("%Y-%m-%d %H:%M:%S")
   end
   
   def date(old_dt, long=true)
@@ -64,7 +64,7 @@ module ApplicationHelper
     
     rtn = Time.at(old_dt.time)
     
-    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
+    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%Y-%m-%d")
   end
 
   def openid(user_id)
@@ -152,7 +152,7 @@ module ApplicationHelper
     icon('logout', session_path, nil, {:method => :delete}, "Logout")
   end
 
-  def memberships_link(user, text="My Memberships")
+  def memberships_link(user, text="My Groups")
     opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
       text = "#{text} (#{length})"
@@ -1276,4 +1276,8 @@ module ApplicationHelper
     '<font class="none_text">Not specified</font>'.html_safe
   end
 
+  # A basic icon intended to be aligned with text
+  def basic_icon(image_name, title = nil, options = {})
+    image_tag(method_to_icon_filename(image_name.downcase), options.merge(:class => 'basic-icon', :title => title))
+  end
 end

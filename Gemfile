@@ -50,4 +50,3 @@ gem 'auto_complete', :git => "git://github.com/marcandre/auto_complete.git"
 gem "thin"
 
 gem 'acts-as-taggable-on'
-

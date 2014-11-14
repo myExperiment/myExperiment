@@ -9,4 +9,4 @@
 /.idea
 /solr/data
 sunspot-solr.pid
-
+*.orig

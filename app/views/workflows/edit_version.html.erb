@@ -1,10 +1,8 @@
 <% t "Edit Version" -%>
 
-<% title_edit       = !@viewing_version.can_infer_title? %>
-<% preview_edit     = !@viewing_version.can_generate_preview_image? %>
-<% description_edit = !@viewing_version.can_infer_description? %>
+<%= title_edit,preview_edit,description_edit,can_edit_anything = workflow_version_editing_permissions(@viewing_version) -%>
 
-<% can_edit_anything = title_edit || preview_edit || description_edit %>
+
 
 <%= javascript_include_tag "ckeditor/ckeditor.js" %>
 

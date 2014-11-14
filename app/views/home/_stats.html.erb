@@ -7,8 +7,9 @@
         <ul>
           <% Conf.home_page_stats.each do |stat| %>
               <li>
+                <%= basic_icon(stat["model"]) %>
                 <%= link_to(pluralize(eval(stat["model"]).count(stat["conditions"] ?
-                                                                        { :conditions => stat["conditions"] } : { }), stat["label"]), stat["link"])-%>
+                            { :conditions => stat["conditions"] } : { }), stat["label"]), stat["link"])-%>
               </li>
           <% end %>
         </ul>

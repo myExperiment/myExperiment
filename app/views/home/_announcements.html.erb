@@ -1,25 +1,26 @@
 <!-- Site Announcements -->
 <% cache(:controller => 'home_cache', :action => 'announcements') do -%>
-    <% unless (announcements = Announcement.latest).empty? %>
-        <div class="box">
+    <% unless (announcements = Announcement.latest(5, 6.months.ago)).empty? %>
+        <div class="box" style="margin-bottom: 0">
           <div class="title">
             <%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
-            Announcements
+            <%= link_to "Announcements", announcements_url %>
           </div>
           <div class="content">
-            <% announcements.each do |a| %>
-                <p class="box_standout" style="font-size: 93%; padding: 0.2em 0.5em; margin: 0.1em 0; font-weight: bold;">
-                  <%= link_to h(a.title), announcement_url(a) %>
-                </p>
-                <p style="font-size: 77%; padding-left: 1.5em;"><b><%= datetime a.created_at, false %></b> by <b><%= name a.user %></b></p>
-            <% end %>
-            <p style="font-size: 77%; text-align: center;">
-              <% if admin? %>
-                  [ <%= link_to "New", new_announcement_url %> ]
+            <ul class="announcements">
+              <% announcements.each do |a| %>
+                  <li>
+                    <p><strong><%= link_to h(a.title), announcement_url(a) %></strong></p>
+                    <span style="font-size: 77%"><%= time_ago_in_words a.created_at, false %> ago by <%= name a.user %></span>
+                  </li>
               <% end %>
-              [ <%= link_to "See All", announcements_url %> ]
-            </p>
+            </ul>
           </div>
         </div>
     <% end %>
+<% end %>
+<% if admin? %>
+    <ul class="sectionIcons" style="margin: 0">
+      <li><%= icon('announcement', new_announcement_url, nil, nil, 'Make Announcement')%></li>
+    </ul>
 <% end %>

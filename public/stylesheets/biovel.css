@@ -1,58 +1,52 @@
-/* Stylesheet for the BioVeL group's skin, based on the e-LICO layout. Requires main myExperiment stylesheet. */
+/* Stylesheet for the BioVeL group's skin */
 
 body  {
-	background: #EEEB99;
+    background: #EEEB99;
 }
 
-#myexp_searchbar, #myexp_sidebar, .pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
-  background-color: #99cc33;
+#main {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+    background: #FFFFFF;
 }
 
-.pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
-  background-image: none;
-}
-#myexp_searchbar {
-  background-image: url('/images/searchfade_alpha.png');
-}
-#myexp_sidebar {
-  background-image: url('/images/sidebar_alpha.png');
+.navbar {
+    background-color: #99cc33;
+    border-color: #8b2 #8b2 #ccc #8b2;
+    margin-bottom: 0;
+    box-shadow: 0 -1px 8px #000;
+    border-radius: 0;
 }
 
-.logo {
-  width: 640px;
+#site_info_links, .form-control, .btn-default {
+    border-color: #8b2;
 }
 
-.logo a {
-  color: #333;
-}#
+#site_info_links a {
+    color: #287621;
+}
 
-.logo a:hover {
-  text-decoration: none;
-  color: #99cc33;
- }
+#selected_tabnav a,
+.nav > li > a:hover,
+.nav > li > a:focus,
+.nav > li > a:active,
+.navbar-myexp .navbar-nav > .active > a, .navbar-myexp .navbar-nav > .active > a:hover,
+.navbar-myexp .navbar-nav > .active > a:focus,
+.navbar-myexp .navbar-nav > .open > a,
+.navbar-myexp .navbar-nav > .open > a:hover,
+.navbar-myexp .navbar-nav > .open > a:focus {
+    background-color: #b1e10f;
+    color: inherit;
+}
+
+/* Notification icon in navbar */
+.alert-info {
+    background-color: #edf7d9;
+    border-color: #e8f1bc;
+    color: #708f31;
+}
 
 .links {
-  color: #608509
-}
-
-/* To add a white margin around the content */
-
-#doc2 {
-  box-shadow: 0 0 16px 4px #7f793f;
-}
-
-#myexp_header {
-  margin-bottom: 0;
-}
-
-#site_info_links {
-  display: none;
-}
-
-.tabnav li.return_tab {
-  margin-right: 1em;
-}
-
-.tabnav li.return_tab a:hover {
-  background-color: #cd0b37;
+    color: #608509
 }
