@@ -24,15 +24,15 @@
             <% end %>
           <% end %>
           <% if Authorization.check('create', Comment, user, activity) %>
-            <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
-              <span><a href="#" onclick="document.getElementById('comment-section-<%= activity.id -%>').style.display = 'block'; return false;">Comment</a></span>
+            <% if activity.comments.length == 0 %>
+              <span><a href="#" onclick="$('comment-section-<%= activity.id -%>').toggle(); return false;">Comment</a></span>
             <% else %>
               <span>Comment</span>
             <% end %>
           <% end %>
           <span class="date"><%= datetime(activity.timestamp) -%></span>
         </div>
-        <div class="commentSection"<%= " id='comment-section-#{activity_set.first.id}'" if activity_set.length == 1 -%>>
+        <div class="commentSection"<%= " id=\"comment-section-#{activity_set.first.id}\" style=\"display: none\"".html_safe if activity_set.length == 1 -%>>
         <% activity.comments.each do |comment| %>
           <div class="activityCommentBox">
             <div style="float: left">
@@ -71,11 +71,6 @@
           </div>
         <% end %>
         </div>
-        <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
-          <script>
-            document.getElementById("comment-section-<%= activity.id -%>").style.display = "none";
-          </script>
-        <% end %>
       <% end %>
     </div>
     <div style="clear: both"/>
