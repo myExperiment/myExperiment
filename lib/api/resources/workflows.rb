@@ -96,17 +96,17 @@ def workflow_aux(action, opts = {})
     #   2nd = extracted metadata from workflow processor
     #   3rd = values from previous version
 
-    metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+    metadata = Workflow.extract_metadata(ob)
 
     if title
       ob.title = title
-    elsif metadata["title"]
+    elsif metadata["title"] && action == "create"
       ob.title = metadata["title"]
     end
 
     if description
       ob.body = description
-    elsif metadata["description"]
+    elsif metadata["description"] && action == "create"
       ob.body = metadata["description"]
     end
 
@@ -115,7 +115,6 @@ def workflow_aux(action, opts = {})
 
     begin
       if preview.nil? and content
-        metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
         preview = metadata["image"].read if metadata["image"]
       end
 
@@ -124,7 +123,6 @@ def workflow_aux(action, opts = {})
       end
 
       if svg.nil? and content
-        metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
         svg = metadata["image"].read if metadata["image"]
       end
 

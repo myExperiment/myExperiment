@@ -61,7 +61,7 @@ class Workflow < ActiveRecord::Base
   acts_as_rdf_serializable('application/x-turtle',
       :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.",
       :do_not_validate => true) do |workflow|
-    workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow) unless workflow.processor_class.nil?
+    workflow.workflow_model.extract_rdf_structure(workflow) unless workflow.workflow_model.nil?
   end
 
   has_previews
@@ -151,24 +151,11 @@ class Workflow < ActiveRecord::Base
 
 
   
-  def self.extract_metadata(opts = {})
-
-    if opts[:type]
-      content_type = ContentType.find_by_title(opts[:type])
-    elsif opts[:mime_type]
-      content_type = ContentType.find_by_mime_type(opts[:mime_type])
-    end
-
-    if content_type
-      proc_class = WorkflowTypesHandler.processor_class_for_type_display_name(content_type.title)
-    end
-
+  def self.extract_metadata(workflow)
     metadata = {}
+    proc_class = workflow.processor_class
 
-    if proc_class && opts[:data]
-
-      processor = proc_class.new(opts[:data])
-
+    unless (processor = workflow.workflow_model).nil?
       metadata["title"]       = processor.get_title
       metadata["description"] = processor.get_description
 
@@ -189,9 +176,9 @@ class Workflow < ActiveRecord::Base
 
   def apply_extracted_metadata
 
-    return if content_blob.nil? or content_type.nil?
+    return if content_blob.nil? || content_type.nil? || (!title.nil? && !body.nil? && !image.nil? && !svg.nil?)
 
-    metadata = Workflow.extract_metadata(:type => content_type.title, :data => content_blob.data)
+    metadata = Workflow.extract_metadata(self)
 
     self.title = metadata["title"]       if metadata["title"]       and title.nil?
     self.body  = metadata["description"] if metadata["description"] and body.nil?
@@ -246,7 +233,7 @@ class Workflow < ActiveRecord::Base
   
   def get_workflow_processor(version = current_version)
 
-    return nil unless workflow_version = self.find_version(version)
+    return nil unless workflow_version = (version == 0 ? self : self.find_version(version))
     return nil unless version_processor = workflow_version.processor_class
 
     version_processor.new(workflow_version.content_blob.data)
@@ -254,14 +241,14 @@ class Workflow < ActiveRecord::Base
 
   def get_workflow_model_object(version)
 
-    return nil unless version_processor = get_workflow_processor(version)
+    return nil unless version_processor = workflow_model(version)
 
     version_processor.get_workflow_model_object
   end
 
   def get_search_terms(version)
 
-    return nil unless version_processor = get_workflow_processor(version)
+    return nil unless version_processor = workflow_model(version)
 
     version_processor.get_search_terms
   end
@@ -270,7 +257,7 @@ class Workflow < ActiveRecord::Base
  
   def get_input_ports(version)
 
-    return nil unless version_processor = get_workflow_processor(version)
+    return nil unless version_processor = workflow_model(version)
 
     return version_processor.get_workflow_model_input_ports
   end
@@ -382,7 +369,7 @@ class Workflow < ActiveRecord::Base
     if processor_class
       delete_metadata
       begin
-        processor_class.new(content_blob.data).extract_metadata(self)
+        workflow_model.extract_metadata(self)
       rescue
         raise unless Rails.env == 'production'
       end
@@ -466,5 +453,10 @@ class Workflow < ActiveRecord::Base
   def component_checklist(version = nil)
     version ||= self.current_version
     @checklist ||= ComponentValidator.new(self.find_version(version), self.component_profile).validate
+  end
+
+  def workflow_model(version = 0)   # Memoized to stop the workfow being needlessly parsed (which takes ages)
+    @workflow_models ||= []
+    @workflow_models[version] ||= get_workflow_processor(version)
   end
 end

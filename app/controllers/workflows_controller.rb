@@ -281,8 +281,6 @@ class WorkflowsController < ApplicationController
 
         if params[:tag_list]
           replace_tags(@workflow, current_user, convert_tags_to_gem_format(params[:tag_list]))
-          @workflow.reload
-          @workflow.solr_index if Conf.solr_enable
         end
         
         begin
@@ -302,14 +300,8 @@ class WorkflowsController < ApplicationController
 
         if policy_err_msg.blank?
           update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
-        	flash[:notice] = 'Workflow was successfully created.'
-          format.html {
-            if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
-              redirect_to tag_suggestions_workflow_url(@workflow)
-            else
-              redirect_to workflow_url(@workflow)
-            end
-          }
+          flash[:notice] = 'Workflow was successfully created.'
+          format.html { redirect_to workflow_url(@workflow) }
         else
         	flash[:notice] = "Workflow was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
           format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
@@ -471,8 +463,6 @@ class WorkflowsController < ApplicationController
 
         if params[:tag_list]
           replace_tags(@workflow, current_user, convert_tags_to_gem_format(params[:tag_list]))
-          @workflow.reload
-          @workflow.solr_index if Conf.solr_enable
         end
 
         policy_err_msg = update_policy(@workflow, params, current_user)
@@ -900,18 +890,20 @@ private
       logger.debug("A workflow processor for the file uploaded could not be found!")
     else
       # Check that the processor can do inferring of metadata
+
+      # Set the content type first, so the call to workflow_model will get the right processor
+      workflow_to_set.content_type = ContentType.find_by_title(processor_class.display_name)
+
       if processor_class.can_infer_metadata?
         begin
-          processor_instance = processor_class.new(file.read)
+          processor_instance = workflow_to_set.workflow_model
           
           # Rewind the file, just in case
           file.rewind
           
           workflow_to_set.title = processor_instance.get_title      if processor_instance.get_title
           workflow_to_set.body = processor_instance.get_description if processor_instance.get_description
-          
-          workflow_to_set.content_type = ContentType.find_by_title(processor_class.display_name)
-          
+
           # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
           

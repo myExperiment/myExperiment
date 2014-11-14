@@ -26,8 +26,8 @@ class WorkflowVersion < ActiveRecord::Base
   has_previews
 
   def components
-    if processor_class
-      processor_class.new(content_blob.data).get_components
+    if workflow_model
+      workflow_model.get_components
     else
       XML::Node.new('components')
     end
@@ -66,6 +66,11 @@ class WorkflowVersion < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def workflow_model  # Memoized to stop the workfow being needlessly parsed (which takes ages)
+    @workflow_model
+    @workflow_model ||= processor_class.nil? ? nil : processor_class.new(content_blob.data)
   end
 end
 
