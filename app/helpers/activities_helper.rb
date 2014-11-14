@@ -197,7 +197,7 @@ module ActivitiesHelper
 
     activity = activity_set.first
 
-    case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+    title = case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
     when "Announcement create"
       "#{activity_link(activity, :subject)} announced #{activity_link(activity, :object)}"
     when "Announcement edit"
@@ -259,6 +259,8 @@ module ActivitiesHelper
     when "GroupAnnouncement create"
       activity_link(activity, :object)
     end
+
+    raw(title)
   end
 
   def activity_description(activity_set, opts = {})
@@ -267,7 +269,7 @@ module ActivitiesHelper
 
     activity = activity_set.first
 
-    case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+    description = case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
     when "BlobVersion create"
       activity.objekt.body_html
     when "Comment create"
@@ -288,17 +290,21 @@ module ActivitiesHelper
     when "GroupAnnouncement create"
       activity_text_summary(activity.objekt.body_html, :min_chars => min_chars)
     end
+
+    raw(description)
   end
 
   def activity_extra(activity_set, opts = {})
 
     activity = activity_set.first
 
-    case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+    extra = case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
     when "FeedItem create"
       feed = activity.objekt.feed
       "<div class='extra'>#{image_tag("feed_gray.png", :size => "10x10", :alt_text => "Original atom feed for this news item")} Content via #{link_to(h(feed.title ? feed.title : feed.uri), activity.objekt.feed.uri)}</div>"
     end
+
+    raw(extra)
   end
 end
 
