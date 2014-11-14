@@ -254,7 +254,7 @@ class PacksController < ApplicationController
     if uri
       errors, @type, @item_entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
       unless errors.empty?
-        @error_message = errors.full_messages.to_sentence(:connector => '')
+        @error_message = errors.full_messages.to_sentence
       end
     end
     
@@ -283,7 +283,7 @@ class PacksController < ApplicationController
             format.html { render :action => "new_item" }
           end
         else
-          @error_message = errors.full_messages.to_sentence(:connector => '')
+          @error_message = errors.full_messages.to_sentence
           flash.now[:error] = 'Failed to add item to pack. See errors below.'
           format.html { render :action => "new_item" }
         end
@@ -385,7 +385,7 @@ class PacksController < ApplicationController
         else
           copy_errors(entry.errors, errors)
           flash.now[:error] = 'Failed to add item. See error(s) below.'
-          @error_message = errors.full_messages.to_sentence(:connector => '')
+          @error_message = errors.full_messages.to_sentence
           format.js   { render :layout => false, :status => :unprocessable_entity }
           format.html { render :action => "show" }
         end
@@ -401,7 +401,7 @@ class PacksController < ApplicationController
       else
         errors, @type, @item_entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
         unless errors.empty?
-          @error_message = errors.full_messages.to_sentence(:connector => '')
+          @error_message = errors.full_messages.to_sentence
         end
       end
       

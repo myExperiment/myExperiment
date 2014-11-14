@@ -12,7 +12,7 @@
  <%= render :partial => "workflows/table", :locals => { :collection => [ @workflow ] } %>
 </div>
 
-<% file_exts_allowed = ((proc_class_temp = @workflow.processor_class).nil? ? ".#{@workflow.file_ext}" : (proc_class_temp.file_extensions_supported.map{|x| ".#{x}"}.to_sentence(:connector => "or"))) %>
+<% file_exts_allowed = ((proc_class_temp = @workflow.processor_class).nil? ? ".#{@workflow.file_ext}" : (proc_class_temp.file_extensions_supported.map{|x| ".#{x}"}.to_sentence(:last_word_connector => " or "))) %>
 <center>
 	<div class="box_infotext" style="text-align: center; margin-bottom: 1.2em; width: 450px;">
 		<p>
