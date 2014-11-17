@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Permission < ActiveRecord::Base
+
+  attr_accessible :contributor, :policy
+
   belongs_to :contributor, :polymorphic => true
   belongs_to :policy
   
