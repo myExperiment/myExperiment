@@ -33,13 +33,7 @@
 			      <a href="#favourited_by"><%= pluralize contributable.bookmarks.count, "favourite" -%></a>
 			    </p>
 				<% end -%>
-				
-				<% if rateable? type -%>
-					<p>
-			      <a href="#ratings"><%= pluralize contributable.ratings.count, "rating" -%></a>
-			    </p>
-				<% end -%>
-				
+
 				<% if allow_citations? type %>
 					<p>
 						<a href="#citations"><%= pluralize contributable.citations.count, "citation" %></a>
