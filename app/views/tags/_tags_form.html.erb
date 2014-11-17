@@ -86,7 +86,7 @@ document.onkeypress = handleEnter;
 <% elsif edit %>
   <script>
     <% taggable.tags.sort{|a,b| a.name.downcase <=> b.name.downcase}.each do |t| %>
-      tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
+      tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"".html_safe %>);
     <% end %>
     updateTagList();
   </script>
