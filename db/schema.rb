@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140903091202) do
+ActiveRecord::Schema.define(:version => 20141117141824) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -282,7 +282,7 @@ ActiveRecord::Schema.define(:version => 20140903091202) do
     t.string   "context_type"
     t.integer  "context_id"
     t.string   "username"
-    t.string   "password"
+    t.string   "encrypted_password"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

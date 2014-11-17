@@ -5,12 +5,13 @@
 
 require 'simple-rss'
 require 'open-uri'
-require 'encrypted_attributes'
 require 'curb'
 
 class Feed < ActiveRecord::Base
 
-  encrypts :password, :mode => :symmetric, :password => Conf.sym_encryption_key
+  attr_accessible :uri, :username, :password
+
+  attr_encrypted :password, :key => Conf.sym_encryption_key, :algorithm => 'des-ede3-cbc'
 
   belongs_to :context, :polymorphic => true
 
