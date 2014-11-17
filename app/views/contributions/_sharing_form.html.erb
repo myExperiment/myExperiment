@@ -228,7 +228,7 @@
             <% selected_option = (Conf.layouts[contributable.contribution.policy.layout]["network_id"] unless
                 (contributable.contribution.nil? || contributable.contribution.policy.nil? ||
                  contributable.contribution.policy.layout.nil? || Conf.layouts[contributable.contribution.policy.layout].nil?)) %>
-            <%= select_tag "layout", "<option value="">Default</option>" +
+            <%= select_tag "layout", "<option value="">Default</option>".html_safe +
                 options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
                                                    'id','title', selected_option) %>
           </div>
