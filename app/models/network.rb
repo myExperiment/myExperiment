@@ -23,7 +23,7 @@ class Network < ActiveRecord::Base
   has_many :blobs, :as => :contributor
   has_many :workflows, :as => :contributor
   has_many :policies, :as => :contributor
-  has_one  :feed, :as => :context
+  has_one  :feed, :as => :context, :dependent => :destroy
   has_many :activities, :as => :context
 
   if Conf.solr_enable
