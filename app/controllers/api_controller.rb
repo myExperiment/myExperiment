@@ -35,7 +35,7 @@ private
     end
 
     method = request.method.to_s.upcase
-    uri = request.fullpath.match(/\/(.+)\..+/)[1]
+    uri = request.fullpath.match(/\/([a-zA-Z_-]+)\./)[1]
 
     # logger.info "current token: #{current_token.inspect}"
     # logger.info "current user: #{user.id}"
