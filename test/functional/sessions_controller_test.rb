@@ -8,8 +8,14 @@ require 'sessions_controller'
 
 class SessionsControllerTest < ActionController::TestCase
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+
+  test "can logout" do
+    login_as(:john)
+    assert_equal users(:john).id, session[:user_id]
+
+    delete :destroy
+
+    assert_redirected_to home_url
+    assert session[:user_id].nil?
   end
 end
