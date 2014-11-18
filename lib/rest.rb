@@ -57,7 +57,7 @@ def rest_routes
       formats << "rdf" if TABLES['REST'][:data][uri][method]["RDF"]
 
       formats.each do |format|
-        match "#{uri}.#{format}" => 'api#process_request', :uri => uri, :format => format
+        match "#{uri}.#{format}", :to => "api#process_request"
       end
     end
   end

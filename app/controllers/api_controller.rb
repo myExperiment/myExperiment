@@ -35,7 +35,7 @@ private
     end
 
     method = request.method.to_s.upcase
-    uri    = params[:uri]
+    uri = request.fullpath.match(/\/(.+)\..+/)[1]
 
     # logger.info "current token: #{current_token.inspect}"
     # logger.info "current user: #{user.id}"
@@ -78,9 +78,9 @@ private
     end  
 
     case rules['Type']
-      when 'index'; rest_index_request(params[:uri], params[:format], rules, user, params)
-      when 'crud';  rest_crud_request(params[:uri], params[:id], params[:format], rules, user, params)
-      when 'call';  rest_call_request(:req_uri => params[:uri], :format => params[:format], :rules => rules, :user => user, :query => params)
+      when 'index'; rest_index_request(uri, params[:format], rules, user, params)
+      when 'crud';  rest_crud_request(uri, params[:id], params[:format], rules, user, params)
+      when 'call';  rest_call_request(:req_uri => uri, :format => params[:format], :rules => rules, :user => user, :query => params)
       else;         rest_response(500, :reason => "Unknown REST table type")
     end
   end
