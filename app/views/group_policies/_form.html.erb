@@ -54,7 +54,7 @@
 <h3>Styling</h3>
 <p>Resources using this policy will inherit the styling from the following group:</p>
 <% selected_option = (Conf.layouts[policy.layout]["network_id"] unless (policy.layout.nil? || Conf.layouts[policy.layout].nil?)) %>
-<%= select_tag "layout", "<option value="">Default</option>" +
+<%= select_tag "layout", "<option value="">Default</option>".html_safe +
     options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
                                        'id','title', selected_option) %>
 

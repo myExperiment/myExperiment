@@ -77,7 +77,7 @@
 
 		<br/>
 
-    <div id="group_policy" <%= 'style="display: none"' if !using_group_policy-%>>
+    <div id="group_policy" <%= 'style="display: none"'.html_safe if !using_group_policy-%>>
       <p><strong>Which Group Policy do you wish to apply to this <%= c_type -%>?</strong></p>
       <div class="box_editing" style="padding-left: 1em; font-size: 93%;">
         <select name="group_policy">
