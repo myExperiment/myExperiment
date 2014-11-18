@@ -600,7 +600,7 @@ def rest_index_request(req_uri, format, rules, user, query)
 
       find_args = args[:find_args].clone
 
-      results = args[:model].constantize.find(:all, find_args).paginate(:page => page, :per_page => size)
+      results = args[:model].constantize.where(find_args[:conditions]).order(find_args[:order]).paginate(:page => page, :per_page => size)
 
       results unless results.empty?
     }
