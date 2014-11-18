@@ -81,7 +81,7 @@
 </center>
 <h2>Email</h2>
 <p style="font-size: 85%;">
-    <%= link_to_function "Why should I provide an email address?" + expand_image, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>
+    <%= link_to_function "Why should I provide an email address?".html_safe + expand_image, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>
 </p>
 <div id="email_why" class="box_standout" style="display: none;">
     <ul style="margin-top: 0.1em;">
