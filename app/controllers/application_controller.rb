@@ -27,9 +27,11 @@ class ApplicationController < ActionController::Base
 
   include ActionView::Helpers::NumberHelper
 
-  before_filter :configure_layout
-  layout lambda { |_| @layout["layout"] }
-  
+  # Layout variable can be accessed from views with 'controller.layout'...
+  # '@layout' won't work for some reason. Perhaps instance vars have already been passed when 'configure_layout' is called
+  attr_reader :layout
+  layout :configure_layout
+
   def check_for_sleeper
     if request.method != :get && logged_in?
       if current_user.account_status == "sleep"
@@ -636,6 +638,8 @@ class ApplicationController < ActionController::Base
     else
       @layout = layout
     end
+
+    @layout["layout"]
   end
 
 end
