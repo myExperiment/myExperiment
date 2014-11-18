@@ -1,7 +1,7 @@
 <% @logo_link_url  = "http://biovel.eu/" # The URL that the logo links to when clicked
    @logo_image_url = "/images/biovel_logo_white_background.png" # The logo image
 
-   biovel_id = @layout['network_id']
+   biovel_id = controller.layout['network_id']
 
    biovel_tabs = [
        {'controller' => 'networks', 'label' => 'BioVeL', 'link' => network_path(biovel_id)},
@@ -13,7 +13,9 @@
 %>
 
 <% content_for :site_info_links do %>
-    <%= link_to "Back to #{image_tag("/images/logo_tiny.png", :style=>"vertical-align: bottom")}", "/home" -%>
+    <%= link_to "/home" do -%>
+        Back to <%= image_tag("/images/logo_tiny.png", :style=>"vertical-align: bottom") -%>
+    <% end %>
     <span class="divider">|</span>
     <%= link_to 'About BioVeL', 'http://www.biovel.eu/about-biovel', :target => :blank %>
     <span class="divider">|</span>
