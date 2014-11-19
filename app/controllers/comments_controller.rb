@@ -69,7 +69,7 @@ class CommentsController < ApplicationController
     @context.solr_index if @context.respond_to?(:solr_index)
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }
+      format.html { render :partial => "comments/comment",  :collection => @context.comments }
     end
   end
 
