@@ -1,3 +1,5 @@
+// Handle the dynamic submission and deletion of comments
+
 $j(document).ready(function(){
 
     // Finn: Not sure what this does...
