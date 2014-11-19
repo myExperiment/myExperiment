@@ -1,6 +1,6 @@
 class Citation < ActiveRecord::Base
   
-  attr_accessible :user, :user_id, :workflow, :workflow_id, :workflow_version, :title, :authors, :accessed_at, :published_at
+  attr_accessible :user, :user_id, :workflow, :workflow_id, :workflow_version, :title, :authors, :accessed_at, :published_at, :publication, :url
   
   belongs_to :user
   belongs_to :workflow
