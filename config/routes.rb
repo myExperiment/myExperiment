@@ -13,7 +13,7 @@ MyExperiment::Application.routes.draw do
   resources :predicates
   resource :mashup
 
-  resource :search do
+  resource :search, :controller => 'search' do
     member do
       get :live_search
       get :open_search_beta
