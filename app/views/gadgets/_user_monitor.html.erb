@@ -35,7 +35,7 @@
       <% end %>
     </li>
     <li>
-      <% link_to user_memberships_path(current_user) do %>
+      <%= link_to user_memberships_path(current_user) do %>
           My Groups
           <% unless (length = current_user.networks_membership_requests_pending.length + current_user.memberships_invited.length) == 0 %>
               <span class="badge alert-info"><%= length %></span>
