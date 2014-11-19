@@ -110,7 +110,9 @@
                   <% if s.descriptions %>
                     <% s.descriptions.each do |desc| %>
                       <%= h desc -%>
-                      <%= "<hr />" unless desc==s.descriptions.last %>
+                      <% unless desc == s.descriptions.last %>
+                        <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>
@@ -144,7 +146,7 @@
                 <td><%= h p.type -%></td>
                 <td>
                   <%= h p.description -%>
-                  <%= workflow_processor_details(p.configuration) -%>
+                  <%= workflow_processor_details(p.configuration).html_safe -%>
                 </td>
               </tr>
             <% end %>
@@ -179,7 +181,9 @@
                   <% if b.inputs %>
                     <% b.inputs.each do |x| %>
                       <%=h x -%>
-                      <%= "<hr />" unless x==b.inputs.last %>
+                      <% unless x == b.inputs.last %>
+                        <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>
@@ -187,7 +191,9 @@
                   <% if b.outputs %>
                     <% b.outputs.each do |x| %>
                       <%=h x -%>
-                      <%= "<hr />" unless x==b.outputs.last %>
+                      <% unless x == b.outputs.last %>
+                        <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>
@@ -221,7 +227,9 @@
                   <% if s.descriptions %>
                     <% s.descriptions.each do |desc| %>
                       <%= h desc -%>
-                      <%= "<hr />" unless desc==s.descriptions.last %>
+                      <% unless desc==s.descriptions.last %>
+                        <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>

@@ -82,7 +82,9 @@
                   <% if b.inputs %>
                     <% b.inputs.each do |x| %>
                       <%=h x -%>
-                      <%= "<hr />" unless x==b.inputs.last %>
+                      <% unless x == b.inputs.last %>
+                          <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>
@@ -90,7 +92,9 @@
                   <% if b.outputs %>
                     <% b.outputs.each do |x| %>
                       <%=h x -%>
-                      <%= "<hr />" unless x==b.outputs.last %>
+                      <% unless x == b.outputs.last %>
+                          <hr/>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </td>

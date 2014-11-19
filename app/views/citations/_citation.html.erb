@@ -1,7 +1,7 @@
 <% actions ||= false -%>
 
-<% arr = ["#{h(citation.authors)}, <b>#{h(citation.title)}</b>"] -%>
-<% arr << "<i>#{h(citation.publication)}</i>" if citation.publication and !citation.publication.empty? -%>
+<% arr = ["#{h(citation.authors)}, <b>#{h(citation.title)}</b>".html_safe] -%>
+<% arr << "<i>#{h(citation.publication)}</i>".html_safe if citation.publication and !citation.publication.empty? -%>
 <% arr << "#{date(citation.published_at)}" if citation.published_at -%>
 <% arr << link_to(h(citation.url), citation.url) if citation.url and !citation.url.empty? -%>
 <% arr << "Accessed at: #{date(citation.accessed_at)}" if citation.accessed_at -%>
