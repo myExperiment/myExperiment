@@ -1,13 +1,13 @@
-<%= javascript_include_tag "ckeditor/ckeditor.js" %>
-
-<h2>
-	<%= icon "comments", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
-	<span style="vertical-align: middle;">Comments</span>
-	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
-</h2>
-
 <div class="commentsBox">
-	
+  <%= javascript_include_tag "ckeditor/ckeditor.js" %>
+  <%= javascript_include_tag "comments.js" %>
+
+  <h2>
+  	<%= icon "comments", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
+  	<span style="vertical-align: middle;">Comments</span>
+  	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
+  </h2>
+
 	<% unless commentable.comments.empty? %>
 		<% if logged_in? %>
 			<%= link_to "Make a comment", "#make_comment" %>
@@ -25,26 +25,18 @@
 			<p style="margin-top: 0.6em;"><strong><%= link_to "Log in", new_session_url %> to make a comment </strong></p>
 		<% end %>
 	<% end %>
-	
+
 	<br/>
-	
+
 	<% if logged_in? %>
 		<a name="make_comment"></a>
 		<div class="addCommentBox">
 			<h4>Make a Comment:</h4>
-			<% if false %><%= allowed_html_text %><% end %>
-			
 			<% # Hack for FCKEditor: -%>
 			<% @comment = Comment.new; @comment.id = 0 -%>
-			
-                <%= form_tag(:remote => true, :url => polymorphic_path(commentable) + "/comments",
-								 :before => 'for (instance in CKEDITOR.instances) { CKEDITOR.instances[instance].updateElement() }',
-							   :update => 'commentsBox', 
-							   :loading => "Element.show('addcomment_indicator')",
-	               :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = ''; CKEDITOR.replace('comment_comment')") do %>
-				
+
+          <%= form_tag(polymorphic_path(commentable) + "/comments", :remote => true, :id => 'comment-form') do %>
 				<%= text_area_tag("comment[comment]", nil, :width => '99%', :height => '200px', :class => 'ckeditor') %>
-				<% if false %><textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><% end %>
 				<br/>
 				<%= submit_tag "Submit Comment" %>
 				<%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
@@ -53,4 +45,3 @@
 	<% end %>
 
 </div>
-
