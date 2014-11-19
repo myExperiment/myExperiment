@@ -138,4 +138,31 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_includes wf.tags.map {|t| t.name}, 'utf-8 ㈛ ㈘ ㈔'
     assert_includes wf.tags.map {|t| t.name}, 'new tag'
   end
+
+  test "can add workflow to favourites" do
+    login_as(:john)
+    wf = workflows(:workflow_branch_choice)
+
+    assert_equal 0, wf.bookmarks.size
+
+    assert_difference('Bookmark.count', 1) do
+      post :favourite, :id => wf.id
+    end
+
+    assert_response :redirect
+    assert_equal users(:john), wf.reload.bookmarks.first.user
+  end
+
+  test "can remove workflow from favourites" do
+    login_as(:john)
+    wf = workflows(:workflow_dilbert)
+
+    assert_equal 1, wf.bookmarks.size
+
+    assert_difference('Bookmark.count', -1) do
+      delete :favourite_delete, :id => wf.id
+    end
+
+    assert_response :redirect
+  end
 end
