@@ -13,9 +13,9 @@ GIT
 
 GIT
   remote: git://github.com/myExperiment/white_list_formatted_content.git
-  revision: 63e57e9116f6fb29effce690e14e319e5300244a
+  revision: fa9e55bfa1beeff07d0637ee935c2c7c80022964
   specs:
-    white_list_formatted_content (1.0.1)
+    white_list_formatted_content (1.0.2)
 
 GEM
   remote: http://rubygems.org/
