@@ -186,7 +186,7 @@ MyExperiment::Application.routes.draw do
     end
 
     resource :userhistory
-    resources :reports
+    resources :reports, :controller => 'user_reports'
     resources :workflows, :only => :index
     resources :blobs, :path => 'files', :only => :index
     resources :packs, :only => :index

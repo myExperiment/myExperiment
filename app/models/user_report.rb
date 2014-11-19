@@ -4,7 +4,10 @@
 # See license.txt for details.
 
 class UserReport < ActiveRecord::Base
+
+  attr_accessible :user, :subject
+
   belongs_to :user
   belongs_to :subject, :polymorphic => true
-end
 
+end

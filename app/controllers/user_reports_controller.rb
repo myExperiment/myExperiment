@@ -6,10 +6,12 @@
 class UserReportsController < ApplicationController
 
   before_filter :find_object
-  
+
   def create
     UserReport.create(:user => current_user, :subject => @object)
-    render(:text => '[ reported ]', :status => 200)
+    respond_to do |format|
+      format.html { head 200 }
+    end
   end
 
   private
@@ -17,14 +19,20 @@ class UserReportsController < ApplicationController
   def find_object
     # ensure that the object type is valid
     unless ["Comment", "Message"].include?(params[:subject_type])
-      render(:nothing => true, :status => 400)
+      respond_to do |format|
+        format.html { head 400 }
+      end
     else
       @object = Object.const_get(params[:subject_type]).find_by_id(params[:subject_id])
 
       if @object.nil?
-        render(:text => "Report failed. #{params[:subject_type]} not found.", :status => 404)
+        respond_to do |format|
+          format.html { render(:text => "Report failed. #{params[:subject_type]} not found.", :status => 404) }
+        end
       elsif !Authorization.check('view', @object, current_user)
-        render(:text => "Report failed. You are not authorized to view this #{params[:subject_type]}.", :status => 401)
+        respond_to do |format|
+          format.html { render(:text => "Report failed. You are not authorized to view this #{params[:subject_type]}.", :status => 401) }
+        end
       end
     end
   end

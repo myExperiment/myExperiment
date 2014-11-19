@@ -1,3 +1,5 @@
+<%= javascript_include_tag "reports.js" %>
+
 <% # determine which mode this partial currently works in: inbox or outbox; -%>
 <% # certain feature will only be visible in the inbox -%>
 <% opened_from_inbox = (@message_folder == "inbox") -%>

@@ -7,13 +7,11 @@
   <% else %>
     <small id="<%= div_name -%>">
       [
-      <%= link_to('report',
-          :update => div_name, 
-          :url => "/users/#{current_user.id}/reports?subject_type=#{subject.class.name}&subject_id=#{subject.id}",
+      <%= link_to('report', "/users/#{current_user.id}/reports?subject_type=#{subject.class.name}&subject_id=#{subject.id}",
           :method => :post,
           :remote => true,
-          :complete => "new Effect.Highlight('#{div_name}', { duration: 1.5 }); $('comment').value = '';",
-          :confirm => "Are you sure you want to report this?" ) %>
+          :confirm => "Are you sure you want to report this?",
+          :class => 'report-link') %>
       ]
     </small>
   <% end %>
