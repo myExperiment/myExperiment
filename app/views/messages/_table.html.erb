@@ -47,9 +47,22 @@
 			  <th><%= link_to "Status" + current_ordering_icon("status"), messages_path + "?sort_by=status&order=" + next_ordering("status"), :title => tooltip_title_attrib(tooltip_message("status", opposite_ordering(next_ordering("status")))) -%></th>
 			<% end -%>
 			<th>From</th>
-	    <th><%= link_to "Subject" + current_ordering_icon("subject"), (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=subject&order=" + next_ordering("subject"), :title => tooltip_title_attrib(tooltip_message("subject", opposite_ordering(next_ordering("subject")))) -%></th>
-	    <th><%= link_to (inbox_mode ? "Received at" : "Sent at") + current_ordering_icon("date"), (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=date&order=" + next_ordering("date"), :title => tooltip_title_attrib(tooltip_message("date", opposite_ordering(next_ordering("date")))) -%></th>
-	    <th> </th>
+            <th>
+              <%= link_to (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=subject&order=" + next_ordering("subject"), :title => tooltip_title_attrib(tooltip_message("subject", opposite_ordering(next_ordering("subject")))) do -%>
+                  Subject <%= current_ordering_icon("subject") -%>
+              <% end %>
+            </th>
+            <th>
+              <%= link_to (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=date&order=" + next_ordering("date"), :title => tooltip_title_attrib(tooltip_message("date", opposite_ordering(next_ordering("date")))) do -%>
+                  <% if inbox_mode %>
+                      Received at
+                  <% else %>
+                      Sent at
+                  <% end %>
+                  <%= current_ordering_icon("date") -%>
+              <% end %>
+            </th>
+            <th> </th>
 	  </tr>
 	  
 	<% odd_row = false -%>
@@ -64,13 +77,13 @@
 				</td>
 	    <% end -%>
 			<td style="text-align: center; width: 45px; font-size: 85%;">
-			  <%= "<b>" unless (message.read? || !inbox_mode) %><%= render :partial => "users/avatar", :locals => { :user => message.from, :size => 40 } %><%= "</b>" unless (message.read? || !inbox_mode) %>
+			  <%= "<b>".html_safe unless (message.read? || !inbox_mode) %><%= render :partial => "users/avatar", :locals => { :user => message.from, :size => 40 } %><%= "</b>".html_safe unless (message.read? || !inbox_mode) %>
 		  </td>
 	    <td style="text-align: center;">
-			  <%= "<b>" unless (message.read? || !inbox_mode) %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless (message.read? || !inbox_mode) %>
+			  <%= "<b>".html_safe unless (message.read? || !inbox_mode) %><%=link_to h(message.subject), message_path(message) %><%= "</b>".html_safe unless (message.read? || !inbox_mode) %>
 		  </td>
 	    <td style="width: 185px">
-	    	<%= "<b>" unless (message.read? || !inbox_mode) %><%=datetime message.created_at, false %><%= "</b>" unless (message.read? || !inbox_mode) %>
+	    	<%= "<b>".html_safe unless (message.read? || !inbox_mode) %><%=datetime message.created_at, false %><%= "</b>".html_safe unless (message.read? || !inbox_mode) %>
 			</td>
 	    <td class="actions" style="width: 100px">
 	        <%= icon('show', message_path(message), nil, nil, (inbox_mode ? 'Read' : 'View')) %>
