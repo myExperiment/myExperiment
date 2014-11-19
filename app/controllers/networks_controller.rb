@@ -379,17 +379,10 @@ class NetworksController < ApplicationController
   # POST /networks/1;tag
   def tag
     current_user.tag(@network, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
-    @network.solr_index if Conf.solr_enable
 
     respond_to do |format|
       format.html {
-        render :update do |page|
-          unique_tag_count = @network.tags.uniq.length
-          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
-          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
-          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id }
-          page.replace_html "activities", :partial => "activities/list", :locals => { :context => @network, :activities => activities_for_feed(:context => @network, :user => current_user), :user => current_user }
-        end
+        render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id }
       }
     end
   end

@@ -98,18 +98,10 @@ class WorkflowsController < ApplicationController
     current_user.tag(@workflow, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
 
     respond_to do |format|
-      format.html { 
-        render :update do |page|
-          unique_tag_count = @workflow.tags.uniq.length
-          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
-          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
-          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contribution.contributor_id } 
-        end  
+      format.html {
+        render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id }
       }
     end
-
-    @workflow.reload
-    @workflow.solr_index if Conf.solr_enable
   end
   
   # GET /workflows/1;download

@@ -305,16 +305,10 @@ class BlobsController < ApplicationController
   # POST /files/1;tag
   def tag
     current_user.tag(@blob, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
-    @blob.solr_index if Conf.solr_enable
 
     respond_to do |format|
-      format.html { 
-        render :update do |page|
-          unique_tag_count = @blob.tags.uniq.length
-          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
-          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
-          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } 
-        end
+      format.html {
+        render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id }
       }
     end
   end
