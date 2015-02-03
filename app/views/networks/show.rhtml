@@ -49,7 +49,7 @@
 	|
 	<%= link_to("Shared Items", content_network_path(@network)) -%>
 	|
-	<a href="#creditations">Creditations (<%= @network.creditations.length -%>)</a>
+	<a href="#creditations">Credited by (<%= @network.creditations.length -%>)</a>
 	|
 	<% if mine? @network %>
 	  <a href="#manage_memberships">Manage Groups</a>
@@ -180,7 +180,7 @@
 </div>
 
 <div class="tabContainer">
-  <div class="tabTitle">Creditations (<%= @network.creditations.length -%>)</div>
+  <div class="tabTitle">Credited by (<%= @network.creditations.length -%>)</div>
   <div class="tabContent">
 
     <a name="creditations"></a>
