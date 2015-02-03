@@ -543,7 +543,7 @@ pivot_options:
   order:
 
   - option: rank
-    order: contributions.rank DESC
+    order: contributions.rank DESC, contributions.created_at DESC
     label: Rank
 
   - option: title
