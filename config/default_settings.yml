@@ -33,6 +33,10 @@ site_name: mySite
 
 site_logo: logo.png
 
+# site_logo_cropped - The site logo for small screens (should be narrower)
+
+site_logo_cropped: logo_cropped.png
+
 # contributor_models - These are the models for things that can contribute to
 #                      myExperiment.
 

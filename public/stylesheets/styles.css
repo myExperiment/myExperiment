@@ -2737,12 +2737,20 @@ span.divider {
   top: -40px;
 }
 
+#query {
+  width: 160px;
+}
+
 /* Make navigation tabs smaller on small screens so everything doesn't explode */
 @media (min-width: 768px) and (max-width: 1200px) {
 
-    .navbar-nav > li > a {
-        padding: 15px 9px;
-        font-size: 90%;
-    }
+  .navbar-nav > li > a {
+    padding: 15px 7px;
+    font-size: 85%;
+  }
+
+  #query {
+    width: 80px;
+  }
 
 }

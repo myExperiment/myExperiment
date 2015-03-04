@@ -25,6 +25,10 @@ class Conf
     self.fetch_entry('site_logo')
   end
 
+  def self.site_logo_cropped
+    self.fetch_entry('site_logo_cropped')
+  end
+
   def self.contributor_models
     self.fetch_entry('contributor_models')
   end

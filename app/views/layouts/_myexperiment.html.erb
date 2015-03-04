@@ -28,7 +28,7 @@
 <%= render :partial => "layouts/integrations/#{session[:came_from]}" unless session[:came_from].blank? %>
 
 <div class="navbar navbar-myexp" role="navigation">
-  <div class="container">
+  <div class="container" style="padding: 0;">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
@@ -40,7 +40,8 @@
           <%= yield :logo %>
       <% else %>
           <a id="logo" href="/">
-            <%= image_tag(Conf.site_logo) %>
+            <%= image_tag(Conf.site_logo, :class => 'hidden-sm') %>
+            <%= image_tag(Conf.site_logo_cropped, :class => 'visible-sm') %>
           </a>
       <% end %>
     </div>
