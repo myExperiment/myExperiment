@@ -2753,4 +2753,7 @@ span.divider {
     width: 80px;
   }
 
+  .navbar-myexp .navbar-header {
+    margin-left: -15px;
+  }
 }
