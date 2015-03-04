@@ -491,6 +491,7 @@ UL.breadcrumb_list LI + LI:before {
   background-color: #FFFFFF;
 }
 
+
 #home_container li.seperator {
   height: 1px;
   border-bottom: 1px dotted #999999;
@@ -2139,7 +2140,7 @@ table.topic td.tag_vote {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 84px;
+  width: 75px;
 }
 .pivot .pivot-count {
   float: right;
