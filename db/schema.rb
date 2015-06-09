@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224084027) do
+ActiveRecord::Schema.define(:version => 20150609112129) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -843,6 +843,7 @@ ActiveRecord::Schema.define(:version => 20140224084027) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
+    t.string   "doi"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -865,6 +866,7 @@ ActiveRecord::Schema.define(:version => 20140224084027) do
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
+    t.string   "doi"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

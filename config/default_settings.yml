@@ -674,3 +674,9 @@ expanded_filter_size: 25
 # OnlineHPC integration
 enable_online_hpc: false
 online_hpc_url: http://onlinehpc.com/workflows/editor?provider=myexperiment
+
+enable_datacite: false
+datacite_url: https://mds.datacite.org # Use: https://test.datacite.org/mds for testing
+datacite_username: # username
+datacite_password: # base64 encoded password
+doi_prefix: # 10.5072/myexp-test

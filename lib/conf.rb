@@ -230,6 +230,26 @@ class Conf
     self.fetch_entry('online_hpc_url')
   end
 
+  def self.datacite_enabled?
+    self.fetch_entry('enable_datacite')
+  end
+
+  def self.datacite_url
+    self.fetch_entry('datacite_url')
+  end
+
+  def self.datacite_username
+    self.fetch_entry('datacite_username')
+  end
+
+  def self.datacite_password
+    self.fetch_entry('datacite_password')
+  end
+
+  def self.doi_prefix
+    self.fetch_entry('doi_prefix')
+  end
+
   def self.method_missing(method)
     if @defaults.has_key?(method.to_s)
       fetch_entry(method.to_s)

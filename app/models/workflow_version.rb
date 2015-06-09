@@ -25,6 +25,8 @@ class WorkflowVersion < ActiveRecord::Base
 
   has_previews
 
+  acts_as_doi_mintable('wf', 'Workflow')
+
   def components
     if processor_class
       processor_class.new(content_blob.data).get_components

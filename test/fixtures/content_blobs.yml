@@ -35,3 +35,7 @@ private_workflow_blob:
 component_profile_blob:
   id: 7
   data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>
+
+doiable_workflow_content:
+  id: 8
+  data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>

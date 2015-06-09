@@ -32,4 +32,5 @@ gem "net-http-persistent", "~> 2.8"
 gem "delayed_job", "~>2.0.4"
 gem "wf4ever-transformation-client", "~> 0.3.0"
 gem "sanitize", "~> 2.0.6"
+gem 'datacite_doi_ify'
 
