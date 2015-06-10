@@ -115,7 +115,14 @@ module Finn
         end
 
         def generate_doi(version = nil)
-          "#{Conf.doi_prefix}/#{self.class.doi_type_prefix}/#{self.id}#{(version ? (".#{version}") : '')}"
+          if self.respond_to?(:versioned_resource)
+            resource = self.versioned_resource
+            version = self.version
+          else
+            resource = self
+          end
+
+          "#{Conf.doi_prefix}/#{self.class.doi_type_prefix}/#{resource.id}#{(version ? (".#{version}") : '')}"
         end
 
         def has_doi?
