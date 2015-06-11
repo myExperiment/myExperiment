@@ -34,6 +34,8 @@ class PackVersion < ActiveRecord::Base
 
   has_research_object
 
+  acts_as_doi_mintable('pack', 'Collection')
+
   def items_count
     contributable_entries.count + remote_entries.count
   end

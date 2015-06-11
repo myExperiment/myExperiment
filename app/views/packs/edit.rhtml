@@ -27,6 +27,8 @@
   <br/>
 
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @pack } %>
+
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @pack } %>
   
   <% if @pack.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @pack, :update_perms => true } %>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150609112129) do
+ActiveRecord::Schema.define(:version => 20150610085354) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -490,6 +490,7 @@ ActiveRecord::Schema.define(:version => 20150609112129) do
     t.text     "description_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "doi"
   end
 
   create_table "packs", :force => true do |t|
@@ -502,6 +503,7 @@ ActiveRecord::Schema.define(:version => 20150609112129) do
     t.datetime "updated_at"
     t.integer  "current_version"
     t.integer  "license_id"
+    t.string   "doi"
   end
 
   create_table "pending_invitations", :force => true do |t|

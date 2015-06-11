@@ -181,7 +181,7 @@ class ApplicationController < ActionController::Base
   # Note: currently does not cater for values in quotation marks and does not remove empty values
   # (although it does ignore a trailing comma)
   def parse_comma_seperated_string(s)
-    list = s.split(',')
+    s.nil? ? [] : s.split(',')
   end
 
   def update_policy_aux(contributable, params)
@@ -367,7 +367,7 @@ class ApplicationController < ActionController::Base
     # Then create new creditations:
     
     # Current user
-    if (params[:credits_me].downcase == 'true')
+    if (params[:credits_me].try(:downcase) == 'true')
       c = Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => creditable.class.to_s, :creditable_id => creditable.id)
       c.save
     end

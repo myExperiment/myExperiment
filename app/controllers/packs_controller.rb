@@ -140,6 +140,9 @@ class PacksController < ApplicationController
           @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]
           @pack.update_tags
         end
+
+        update_credits(@pack, params)
+        update_attributions(@pack, params)
         
         # update policy
         policy_err_msg = update_policy(@pack, params, current_user)
@@ -171,6 +174,8 @@ class PacksController < ApplicationController
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params, current_user)
+        update_credits(@pack, params)
+        update_attributions(@pack, params)
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully updated.'
