@@ -147,7 +147,7 @@ module Finn
             resource = self
           end
 
-          "#{Conf.doi_prefix}/#{self.class.doi_type_prefix}/#{resource.id}#{(version ? (".#{version}") : '')}"
+          "#{Conf.doi_prefix}#{self.class.doi_type_prefix}/#{resource.id}#{(version ? (".#{version}") : '')}"
         end
 
         def has_doi?

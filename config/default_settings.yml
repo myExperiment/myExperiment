@@ -679,4 +679,4 @@ enable_datacite: false
 datacite_url: https://mds.datacite.org # Use: https://test.datacite.org/mds for testing
 datacite_username: # username
 datacite_password: # base64 encoded password
-doi_prefix: # 10.5072/myexp-test
+doi_prefix: # 10.5072/myexp-test.    remember to include separator
