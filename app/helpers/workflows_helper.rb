@@ -84,6 +84,13 @@ module WorkflowsHelper
     html
   end
 
+  def systo_execution_url(workflow, version = nil)
+    uri = URI(Conf.systo_execution_url)
+    param = URI.decode_www_form(uri.query || []) << ['modelurl', download_workflow_url(workflow, :version => version)]
+    uri.query = URI.encode_www_form(param)
+    uri.to_s
+  end
+
   private
 
   def component_details(hash)

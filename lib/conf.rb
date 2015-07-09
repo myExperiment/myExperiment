@@ -250,6 +250,14 @@ class Conf
     self.fetch_entry('doi_prefix')
   end
 
+  def self.systo_execution_enabled?
+    self.fetch_entry('enable_systo_execution')
+  end
+
+  def self.systo_execution_url
+    self.fetch_entry('systo_execution_url')
+  end
+
   def self.method_missing(method)
     if @defaults.has_key?(method.to_s)
       fetch_entry(method.to_s)

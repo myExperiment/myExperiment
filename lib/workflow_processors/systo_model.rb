@@ -36,15 +36,22 @@ module WorkflowProcessors
     end
 
     def self.can_determine_type_from_file?
-      false
+      true
     end
 
     def self.recognised?(file)
-      false
+      begin
+        file.rewind
+        json = JSON.parse(file.read)
+        file.rewind
+        !json["arc"].nil? && !json["meta"].nil? && !json["nodes"].nil?
+      rescue
+        false
+      end
     end
 
     def self.can_infer_metadata?
-      false
+      true
     end
 
     def self.can_generate_preview_image?

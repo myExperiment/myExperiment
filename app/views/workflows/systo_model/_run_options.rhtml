@@ -1,17 +1,18 @@
-<div>
-  <h4>
-    Run this Systo model
-  </h4>
-  Enter the URL to a Systo execution page and click "Run" to execute this model
-  <p>
-    <input id="systo-runner-url" placeholder="http://..." type="text" size="64"/>
-    <%= submit_tag 'Run', :onclick => 'executeSystoModel(); return false;' %>
-  </p>
-</div>
-<script>
-  var downloadUrl = '<%= escape_javascript(download_workflow_url(@workflow)) -%>';
+<% if Conf.systo_execution_enabled? %>
+    <div>
+      <h4>
+        Run this Systo model
+      </h4>
 
-  function executeSystoModel() {
-      window.location = $('systo-runner-url').value + '?modelurl=' + downloadUrl;
-  }
-</script>
+      <div class="option_box">
+        <p style="font-size: 93%; text-align: center;">
+          Click the following link to view or execute this model in a Systo application
+        </p>
+        <ul class="sectionIcons">
+          <li><%= icon('onlinehpc', systo_execution_url(@workflow, @viewing_version_number), "View/Run this model in a Systo application", nil, "View/Run this model") -%></li>
+        </ul>
+      </div>
+    </div>
+<% else %>
+    <p class="none_text">Not available</p>
+<% end %>
