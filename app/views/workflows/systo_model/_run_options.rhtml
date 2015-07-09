@@ -1,15 +1,15 @@
 <% if Conf.systo_execution_enabled? %>
     <div>
       <h4>
-        Run this Systo model
+        View/run this Systo model
       </h4>
 
       <div class="option_box">
         <p style="font-size: 93%; text-align: center;">
-          Click the following link to view or execute this model in a Systo application
+          Click the following link to view or simulate this model in a Systo application.
         </p>
         <ul class="sectionIcons">
-          <li><%= icon('onlinehpc', systo_execution_url(@workflow, @viewing_version_number), "View/Run this model in a Systo application", nil, "View/Run this model") -%></li>
+          <li><%= icon('onlinehpc', systo_execution_url(@workflow, @viewing_version_number), "View/run this model in a Systo application", nil, "View/run this model") -%></li>
         </ul>
       </div>
     </div>
