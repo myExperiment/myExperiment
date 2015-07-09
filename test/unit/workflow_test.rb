@@ -7,7 +7,7 @@ class WorkflowTest < ActiveSupport::TestCase
     wf = workflows(:doiable_workflow)
 
     assert wf.mint_doi
-    assert_equal "#{Conf.doi_prefix}/wf/#{wf.id}", wf.doi
+    assert_equal "#{Conf.doi_prefix}wf/#{wf.id}", wf.doi
     assert_equal "http://test.host/workflows/#{wf.id}", DataciteClient.instance.resolve(wf.doi)
   end
 
@@ -15,7 +15,7 @@ class WorkflowTest < ActiveSupport::TestCase
     v = workflow_versions(:doiable_workflow_v1)
 
     assert v.mint_doi
-    assert_equal "#{Conf.doi_prefix}/wf/#{v.workflow.id}.#{v.version}", v.doi
+    assert_equal "#{Conf.doi_prefix}wf/#{v.workflow.id}.#{v.version}", v.doi
     assert_equal "http://test.host/workflows/#{v.workflow_id}?version=1", DataciteClient.instance.resolve(v.doi)
     assert_blank v.workflow.doi
   end

@@ -7,7 +7,7 @@ class PackTest < ActiveSupport::TestCase
     p = packs(:doiable_pack)
 
     assert p.mint_doi
-    assert_equal "#{Conf.doi_prefix}/pack/#{p.id}", p.doi
+    assert_equal "#{Conf.doi_prefix}pack/#{p.id}", p.doi
     assert_equal "http://test.host/packs/#{p.id}", DataciteClient.instance.resolve(p.doi)
   end
 
