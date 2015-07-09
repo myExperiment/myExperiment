@@ -44,7 +44,7 @@ module WorkflowProcessors
         file.rewind
         json = JSON.parse(file.read)
         file.rewind
-        !json["arc"].nil? && !json["meta"].nil? && !json["nodes"].nil?
+        !json["arcs"].nil? && !json["meta"].nil? && !json["nodes"].nil?
       rescue
         false
       end
