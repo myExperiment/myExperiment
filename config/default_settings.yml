@@ -675,8 +675,13 @@ expanded_filter_size: 25
 enable_online_hpc: false
 online_hpc_url: http://onlinehpc.com/workflows/editor?provider=myexperiment
 
+# Datacite DOI minting
 enable_datacite: false
 datacite_url: https://mds.datacite.org # Use: https://test.datacite.org/mds for testing
 datacite_username: # username
 datacite_password: # base64 encoded password
 doi_prefix: # 10.5072/myexp-test.    remember to include separator
+
+# Systo integration
+enable_systo_execution: false
+systo_execution_url: http://flask.systo.org/modelhub.html
