@@ -10,6 +10,7 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
 require 'acts_as_rdf_serializable'
+require 'acts_as_doi_mintable'
 require 'previews'
 require 'sunspot_rails'
 
@@ -63,6 +64,8 @@ class Workflow < ActiveRecord::Base
       :do_not_validate => true) do |workflow|
     workflow.workflow_model.extract_rdf_structure(workflow) unless workflow.workflow_model.nil?
   end
+
+  acts_as_doi_mintable('wf', 'Workflow')
 
   has_previews
 

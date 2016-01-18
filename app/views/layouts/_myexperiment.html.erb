@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <% unless Conf.google_site_verification.nil? %>
   <meta name="google-site-verification" content="<%= Conf.google_site_verification -%>" />
   <% end %>
@@ -41,7 +42,8 @@
           <%= yield :logo %>
       <% else %>
           <a id="logo" href="/">
-            <%= image_tag(Conf.site_logo) %>
+            <%= image_tag(Conf.site_logo, :class => 'hidden-sm') %>
+            <%= image_tag(Conf.site_logo_cropped, :class => 'visible-sm') %>
           </a>
       <% end %>
     </div>

@@ -23,6 +23,8 @@
   <br />
 
   <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @pack } %>
+
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @pack } %>
   
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @pack, :update_perms => true } %>
 

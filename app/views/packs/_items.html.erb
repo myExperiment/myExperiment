@@ -10,7 +10,7 @@
 		<ul id="packItemsList">
 			
 			<!-- Contributable Item Entries -->
-			<% contributable_entries.each do |e| %>
+			<% contributable_entries.sort_by { |e| e.contributable ? e.contributable.title.upcase : 'z' }.each do |e| %>
 				<% show = e.available? ? Authorization.check("view", e.contributable, current_user) : false -%>
 				<li>
 					<table>

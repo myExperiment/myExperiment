@@ -33,6 +33,10 @@ site_name: mySite
 
 site_logo: logo.png
 
+# site_logo_cropped - The site logo for small screens (should be narrower)
+
+site_logo_cropped: logo_cropped.png
+
 # contributor_models - These are the models for things that can contribute to
 #                      myExperiment.
 
@@ -520,7 +524,7 @@ pivot_options:
   order:
 
   - option: rank
-    order: contributions.rank DESC
+    order: contributions.rank DESC, contributions.created_at DESC
     label: Rank
 
   - option: title
@@ -642,3 +646,14 @@ expanded_filter_size: 25
 # OnlineHPC integration
 enable_online_hpc: false
 online_hpc_url: http://onlinehpc.com/workflows/editor?provider=myexperiment
+
+# Datacite DOI minting
+enable_datacite: false
+datacite_url: https://mds.datacite.org # Use: https://test.datacite.org/mds for testing
+datacite_username: # username
+datacite_password: # base64 encoded password
+doi_prefix: # 10.5072/myexp-test.    remember to include separator
+
+# Systo integration
+enable_systo_execution: false
+systo_execution_url: http://flask.systo.org/modelhub.html

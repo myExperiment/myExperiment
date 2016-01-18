@@ -5,6 +5,9 @@
 
 require 'acts_as_contributable'
 require 'acts_as_site_entity'
+require 'acts_as_creditable'
+require 'acts_as_attributable'
+require 'acts_as_doi_mintable'
 require 'uri'
 require 'zip/zip'
 require 'tempfile'
@@ -28,6 +31,10 @@ class Pack < ActiveRecord::Base
   acts_as_commentable
   acts_as_rateable
   acts_as_taggable
+  acts_as_creditable
+  acts_as_attributable
+
+  acts_as_doi_mintable('pack', 'Collection')
 
   has_many :relationships, :dependent => :destroy, :as => :context
 
@@ -741,8 +748,9 @@ class Pack < ActiveRecord::Base
           :is_root_folder => resource.is_root_folder,
           :created_at => resource.created_at,
           :updated_at => resource.updated_at,
-          :uuid => resource.uuid,
-          :title => resource.title)
+          :uuid => resource.uuid
+          #:title => resource.title # This breaks snapshotting with a missing method: 'title' error
+        )
 
         resource_map[resource] = new_resource
 

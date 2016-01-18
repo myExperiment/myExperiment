@@ -84,3 +84,19 @@ utf8_user:
   last_seen_at: 2007-05-01 06:56:26
   created_at: 2007-05-01 06:56:26
   updated_at: 2007-05-01 06:56:26
+
+full_name:
+  id: 7
+  openid_url:
+  name: Joe Bloggington
+  family_name: Bloggington
+  given_name: Joe
+  username: jb
+  salt: <%= SALT %>
+  crypted_password: <%= User.encrypt('password', SALT) %>
+  email: jb@example.com
+  email_confirmed_at: 2014-07-30 13:57:48
+  activated_at: 2014-07-30 13:57:48
+  last_seen_at: 2014-07-30 14:55:48
+  created_at: 2014-07-30 13:55:48
+  updated_at: 2014-07-30 14:55:48

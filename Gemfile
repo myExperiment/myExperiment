@@ -34,6 +34,7 @@ gem 'wf4ever-transformation-client', '~> 0.3.0'
 gem 'sanitize', '~> 2.0.6'
 gem "oauth-plugin", "~> 0.4.0"
 gem 'psych'
+gem 'datacite_doi_ify'
 
 gem 'prototype-rails'
 gem 'jquery-rails', '~> 2.1'

@@ -227,8 +227,32 @@ contribution_unused_component_profile:
   downloads_count: 123
   viewings_count: 156
 
-contribution_communal_component_family:
+contribution_doiable_workflow:
+  id: 19
+  contributor_id: 7
+  contributor_type: User
+  contributable_id: 6
+  contributable_type: Workflow
+  policy_id: 16
+  created_at: 2014-06-12 10:51:01
+  updated_at: 2014-06-12 10:51:01
+  downloads_count: 52
+  viewings_count: 71
+
+contribution_doiable_pack:
   id: 20
+  contributor_id: 7
+  contributor_type: User
+  contributable_id: 6
+  contributable_type: Workflow
+  policy_id: 17
+  created_at: 2015-06-13 13:12:32
+  updated_at: 2015-06-13 13:12:32
+  downloads_count: 12
+  viewings_count: 34
+
+contribution_communal_component_family:
+  id: 21
   contributor_id: 1
   contributor_type: User
   contributable_id: 5
