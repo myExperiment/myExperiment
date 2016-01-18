@@ -62,11 +62,15 @@ GEM
     daemons (1.1.9)
     darkfish-rdoc (1.1.5)
       rdoc (>= 2.1.0)
+    datacite_doi_ify (1.1.0)
+      rest-client (~> 1.7)
     delayed_job (4.0.2)
       activesupport (>= 3.0, < 4.2)
     delayed_job_active_record (4.0.1)
       activerecord (>= 3.0, < 4.2)
       delayed_job (>= 3.0, < 4.1)
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
     dsl_accessor (0.4.4)
       blankslate (>= 2.1.2)
       optionize (>= 0.1.0)
@@ -86,6 +90,8 @@ GEM
       tilt
     hike (1.2.3)
     htmlentities (4.3.2)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.6.9)
     journey (1.0.4)
     jquery-rails (2.3.0)
@@ -105,6 +111,7 @@ GEM
     multipart-post (2.0.0)
     mysql2 (0.3.16)
     net-http-persistent (2.9.4)
+    netrc (0.11.0)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     oauth (0.4.7)
@@ -175,6 +182,10 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     recaptcha (0.3.6)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rmagick (2.13.1)
     rsolr (1.0.10)
       builder (>= 2.1.2)
@@ -212,6 +223,9 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.39)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     wf4ever-transformation-client (0.3.1)
     will_paginate (3.0.6)
 
@@ -226,6 +240,7 @@ DEPENDENCIES
   auto_complete!
   country-select
   curb (~> 0.7.8)
+  datacite_doi_ify
   delayed_job_active_record
   dsl_accessor (~> 0.4.0)
   encrypted_strings (~> 0.3.3)
@@ -265,3 +280,6 @@ DEPENDENCIES
   white_list!
   white_list_formatted_content!
   will_paginate (~> 3.0)
+
+BUNDLED WITH
+   1.11.2
