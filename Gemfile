@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.17'
+gem 'rails', '~> 3.2.22'
 gem 'mysql2'
 gem 'rubyzip', '~> 0.9.4'
 gem 'oauth', '~> 0.4.3'
