@@ -132,7 +132,7 @@ contribution_for_group_file_one:
   viewings_count: 1
 
 contribution_for_group_file_two:
-  id: 19
+  id: 22
   contributor_id: 1
   contributor_type: User
   contributable_id: 8
