@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: git://github.com/myExperiment/white_list_formatted_content.git
-  revision: fa9e55bfa1beeff07d0637ee935c2c7c80022964
+  revision: 46af566a4011816b56f1f6a69cfb629f210f6569
   specs:
     white_list_formatted_content (1.0.2)
 

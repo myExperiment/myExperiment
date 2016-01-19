@@ -1,0 +1,1 @@
+require 'white_list_formatted_content'
