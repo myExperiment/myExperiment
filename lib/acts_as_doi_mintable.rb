@@ -23,8 +23,7 @@ module Finn
 
           include Finn::Acts::DoiMintable::InstanceMethods
           # To generate resource's URL
-          include ActionController::UrlWriter
-          include ActionController::PolymorphicRoutes
+          include Rails.application.routes.url_helpers
         end
       end
 
