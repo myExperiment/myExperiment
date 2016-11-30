@@ -28,7 +28,7 @@ module WorkflowProcessors
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
-      [ "zip" ]
+      [ "zip", "knwf", "knar" ]
     end
 
     def self.default_file_extension
