@@ -40,7 +40,7 @@
 	    <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
 			<% this_user_is_friend_of_current_user = @user.friend? current_user.id %>
 			<% unless this_user_is_friend_of_current_user || current_user.friendship_pending?(@user.id) %>
-	    	<li><%= icon('friendship', new_user_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+	    	<li><%= icon('friendship', new_user_friendship_path(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
 	  	
 			<% unless mine? @user %>
@@ -235,7 +235,7 @@
 						<p>
 				      <b>
 				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user).find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)),
-                            polymorphic_url([@user, klass.pluralize.underscore.to_sym])) %>
+                            polymorphic_path([@user, klass.pluralize.underscore.to_sym])) %>
 							</b>
 				    </p>
 					<% end %>
@@ -443,7 +443,7 @@
 				<% if b.bookmarkable %>
         	<%= render :partial => "contributions/table", :locals => { :collection => [b.bookmarkable.contribution] } %>
 					<p style="text-align: right; margin: 0.7em 0 1.5em 0;">
-					  <% if !(remove_bookmarkable_url_value = remove_bookmarkable_url(b.bookmarkable_type, b.bookmarkable_id)).blank? %>
+					  <% if !(remove_bookmarkable_url_value = remove_bookmarkable_path(b.bookmarkable_type, b.bookmarkable_id)).blank? %>
 						  <%= link_to(delete_image("vertical-align: middle", "") + "<span style='vertical-align: middle;'> Remove from favourites</span>",
                 	remove_bookmarkable_url_value + "?return_to=" + url_for(:action => 'favourites'),
               	  :method => :delete,

@@ -4,13 +4,13 @@
         <div class="box" style="margin-bottom: 0">
           <div class="title">
             <%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
-            <%= link_to "Announcements", announcements_url %>
+            <%= link_to "Announcements", announcements_path %>
           </div>
           <div class="content">
             <ul class="announcements">
               <% announcements.each do |a| %>
                   <li>
-                    <p><strong><%= link_to h(a.title), announcement_url(a) %></strong></p>
+                    <p><strong><%= link_to h(a.title), announcement_path(a) %></strong></p>
                     <span style="font-size: 77%"><%= time_ago_in_words a.created_at, false %> ago by <%= name a.user %></span>
                   </li>
               <% end %>
@@ -21,6 +21,6 @@
 <% end %>
 <% if admin? %>
     <ul class="sectionIcons" style="margin: 0">
-      <li><%= icon('announcement', new_announcement_url, nil, nil, 'Make Announcement')%></li>
+      <li><%= icon('announcement', new_announcement_path, nil, nil, 'Make Announcement')%></li>
     </ul>
 <% end %>

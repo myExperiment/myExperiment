@@ -138,7 +138,8 @@ module ApplicationHelper
     url_for(:controller => 'pictures',
             :action => 'show',
             :id => picture_id,
-            :size => "#{size}x#{size}")
+            :size => "#{size}x#{size}",
+            :only_path => true)
   end
   
   def null_avatar(size=200, alt="Anonymous")
@@ -396,6 +397,22 @@ module ApplicationHelper
                      :controller => contributabletype.downcase.pluralize, 
                      :action => "show", 
                      :id => contributableid)
+    end
+  end
+
+  def contributable_path(contributableid, contributabletype, base_host=nil)
+    if base_host.blank?
+      return url_for(:controller => contributabletype.downcase.pluralize,
+                     :action => "show",
+                     :id => contributableid,
+                     :only_path => true)
+    else
+      return url_for(:only_path => false,
+                     :host => @base_url,
+                     :controller => contributabletype.downcase.pluralize,
+                     :action => "show",
+                     :id => contributableid,
+                     :only_path => true)
     end
   end
   
@@ -1134,11 +1151,12 @@ module ApplicationHelper
   def currentusers_things_url(klass)
     return nil unless current_user
     if Conf.contributable_models.include?(klass)
-      return polymorphic_url([current_user, klass.pluralize.underscore.to_sym])
+      return polymorphic_path([current_user, klass.pluralize.underscore.to_sym])
     else
       return url_for(:controller => 'users',
                      :id => current_user.id,
-                     :action => controller_visible_name(klass))
+                     :action => controller_visible_name(klass),
+                     :only_path => true)
     end
   end
   

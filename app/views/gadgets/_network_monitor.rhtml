@@ -30,7 +30,7 @@
           <ul class="gadget_list">
             <% network.contributions.each do |contribution| %>
               <li>
-                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
+                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_path(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
               </li>
             <% end %>
           </ul>

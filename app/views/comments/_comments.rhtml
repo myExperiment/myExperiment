@@ -16,7 +16,7 @@
 		<% if logged_in? %>
 			<%= link_to "Make a comment", "#make_comment" %>
 		<% else %>
-			<p><strong><%= link_to "Log in", new_session_url %> to make a comment </strong></p>
+			<p><strong><%= link_to "Log in", new_session_path %> to make a comment </strong></p>
 		<% end %>
 		<a name="comments"></a>
 		<ul id="comments" class="comments">
@@ -26,7 +26,7 @@
 		<p><i>No comments yet</i></p>
 		<a name="comments"></a>
 		<% unless logged_in? %>
-			<p style="margin-top: 0.6em;"><strong><%= link_to "Log in", new_session_url %> to make a comment </strong></p>
+			<p style="margin-top: 0.6em;"><strong><%= link_to "Log in", new_session_path %> to make a comment </strong></p>
 		<% end %>
 	<% end %>
 	

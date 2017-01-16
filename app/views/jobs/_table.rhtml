@@ -11,7 +11,7 @@
 			    <td class="mid" style="text-align: left;">
 			    	<p class="title">
 							<%= icon "job", nil, nil, nil, '' %>
-							<%= link_to h(job.title), experiment_job_url(job.experiment, job) %>
+							<%= link_to h(job.title), experiment_job_path(job.experiment, job) %>
 						</p>
 						
 						<p style="font-size: 85%; color: #666666;">
@@ -27,7 +27,7 @@
 						
 						<p style="font-size: 85%;">
 							<b>Part of Experiment: </b>
-							<%= link_to h(job.experiment.title), experiment_url(job.experiment) -%>
+							<%= link_to h(job.experiment.title), experiment_path(job.experiment) -%>
 						</p>
 						
 						<p style="font-size: 85%;">
@@ -38,12 +38,12 @@
 						</p>
 						
 						<p style="font-size: 85%;">
-							<b>Runner:</b> <%= link_to h(job.runner.title), runner_url(job.runner) %>
+							<b>Runner:</b> <%= link_to h(job.runner.title), runner_path(job.runner) %>
 						</p>
 						
 					</td>
 			    <td class="actions"  style="width: 80px;">
-		      	<%= icon "show", experiment_job_url(job.experiment, job), nil, nil, "View" %>
+		      	<%= icon "show", experiment_job_path(job.experiment, job), nil, nil, "View" %>
 						<% if false -%>
 						<% if Authorization.check('edit', job, current_user) -%>
 							<%= icon('edit', edit_experiment_job_path(job.experiment, job), nil, nil, 'Edit') %>

@@ -31,7 +31,7 @@
 <ul class="sectionIcons" style="margin-top: 1.5em; text-align: left;">
 	<li style="margin-left: 0;">
 		<%= link_to_remote "#{image_tag 'refresh.gif'} Verify Status",
-									 :url =>verify_runner_url(@runner),
+									 :url =>verify_runner_path(@runner),
 									 :method => :get,
 									 :update => 'status_box',
 									 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",

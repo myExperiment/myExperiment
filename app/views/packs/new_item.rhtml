@@ -30,7 +30,7 @@
 	<% end -%>
 </div>
 
-<% form_tag create_item_pack_url(@pack) do -%>
+<% form_tag create_item_pack_path(@pack) do -%>
 	<input id="uri2" type="hidden" name="uri" value="<%= params[:uri] || '' -%>"/>
 	
 	<p class="step_text">

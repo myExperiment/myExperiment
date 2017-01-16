@@ -61,7 +61,7 @@
             <ul class="gadget_list">
               <% array.each do |instance| %>
                 <li>
-                  <%= icon klass.downcase, nil, nil, nil, "" %> <%= link_to contributable_name(instance.id, klass, gadget_characters_limit), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass), :title => tooltip_title_attrib(contributable_name(instance.id, klass)) %>
+                  <%= icon klass.downcase, nil, nil, nil, "" %> <%= link_to contributable_name(instance.id, klass, gadget_characters_limit), contributable_path(instance.id, klass), :alt => contributable_name(instance.id, klass), :title => tooltip_title_attrib(contributable_name(instance.id, klass)) %>
                 </li>
               <% end %>
             </ul>

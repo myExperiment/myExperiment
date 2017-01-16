@@ -8,7 +8,7 @@
         <%= render :partial => "layouts/news", :locals => { :collection => news(current_user, false) } %>
     <% else %>
         <p>
-          <b><%= link_to "Log in", new_session_url %> to view your News</b>
+          <b><%= link_to "Log in", new_session_path %> to view your News</b>
         </p>
     <% end %>
   </div>
