@@ -92,7 +92,7 @@ module ApplicationHelper
     
     name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
     
-    return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
+    return link_to(h(name), user_path(user), :title => tooltip_title_attrib(h(user.name)))
   end
   
   def title(network_id, truncate_to=nil)
@@ -106,7 +106,7 @@ module ApplicationHelper
     end
     
     title = truncate_to ? truncate(network.title, :length => truncate_to) : network.title
-    return link_to(h(title), network_url(network))
+    return link_to(h(title), network_path(network))
   end
   
   def avatar(user_id, size=200, url=nil, annotation = nil, image_options = {})
@@ -207,13 +207,13 @@ module ApplicationHelper
   end
 
   def request_friendship_link(user_id)
-    link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
+    link_to("Request Friendship", new_user_friendship_path(:user_id => user_id))
   end
   
   def versioned_resource_link(resource, version_number, long_description=true)
     ver = resource.find_version(version_number)
     if ver
-      url = polymorphic_url(resource, :version => version_number)
+      url = polymorphic_path(resource, :version => version_number)
     else
       return nil
     end
@@ -345,13 +345,13 @@ module ApplicationHelper
           name = h(b.local_name)
         end
         
-        return link ? link_to(name, blob_url(b)) : name
+        return link ? link_to(name, blob_path(b)) : name
       else
         return nil
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
+        return link ? link_to(h(p.title), pack_path(p)) : h(p.title)
       else
         return nil
       end
@@ -373,7 +373,7 @@ module ApplicationHelper
           dot = ""
         end
         
-        return link ? link_to(name, workflow_url(w)) : name
+        return link ? link_to(name, workflow_path(w)) : name
       else
         return nil
       end
@@ -835,9 +835,9 @@ module ApplicationHelper
   def license_icon_link(license)
     case license.unique_name
     when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
-      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
+      return "<a rel=\"Copyright\" href=\"#{license_path(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
     else
-      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
+      return "<a rel=\"Copyright\" href=\"#{license_path(license)}\">#{license.title}</a>"
     end
   end
   

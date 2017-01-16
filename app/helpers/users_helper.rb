@@ -5,13 +5,13 @@
 
 module UsersHelper
   
-  def remove_bookmarkable_url(bookmarkableType, bookmarkableID)
+  def remove_bookmarkable_path(bookmarkableType, bookmarkableID)
     url = ""
     
     case bookmarkableType
-      when 'Blob'; url = favourite_delete_blob_url(bookmarkableID)
-      when 'Workflow'; url = favourite_delete_workflow_url(bookmarkableID)
-      when 'Pack'; url = favourite_delete_pack_url(bookmarkableID)
+      when 'Blob'; url = favourite_delete_blob_path(bookmarkableID)
+      when 'Workflow'; url = favourite_delete_workflow_path(bookmarkableID)
+      when 'Pack'; url = favourite_delete_pack_path(bookmarkableID)
       else;        url = nil;
     end
     
