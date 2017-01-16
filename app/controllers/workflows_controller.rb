@@ -55,7 +55,7 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to workflow_url(@workflow) }
+      format.html { redirect_to workflow_path(@workflow) }
     end
   end
   
@@ -69,7 +69,7 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      redirect_url = params[:return_to] ? params[:return_to] : workflow_url(@workflow)
+      redirect_url = params[:return_to] ? params[:return_to] : workflow_path(@workflow)
       format.html { redirect_to redirect_url }
     end
   end
@@ -312,9 +312,9 @@ class WorkflowsController < ApplicationController
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
             if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
-              redirect_to tag_suggestions_workflow_url(@workflow)
+              redirect_to tag_suggestions_workflow_path(@workflow)
             else
-              redirect_to workflow_url(@workflow)
+              redirect_to workflow_path(@workflow)
             end
           }
         else
@@ -425,9 +425,9 @@ class WorkflowsController < ApplicationController
             @workflow.reload
 
             if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
-              redirect_to tag_suggestions_workflow_url(@workflow)
+              redirect_to tag_suggestions_workflow_path(@workflow)
             else
-              redirect_to workflow_url(@workflow)
+              redirect_to workflow_path(@workflow)
             end
           }
         end
@@ -489,7 +489,7 @@ class WorkflowsController < ApplicationController
         if policy_err_msg.blank?
           update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Workflow was successfully updated.'
-          format.html { redirect_to workflow_url(@workflow) }
+          format.html { redirect_to workflow_path(@workflow) }
         else
           flash[:notice] = "<span style='color: red;'>" + policy_err_msg + "</span>"
           format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
@@ -541,13 +541,13 @@ class WorkflowsController < ApplicationController
       if success
         Activity.create(:subject => current_user, :action => 'edit', :objekt => version, :extra => version.version, :auth => @workflow)
         flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
-        format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+        format.html { redirect_to(workflow_path(@workflow) + "?version=#{params[:version]}") }
       else
         flash[:error] = "Failed to update Workflow."
         if params[:version]
           format.html { render :action => :edit_version }
         else
-          format.html { redirect_to workflow_url(@workflow) }
+          format.html { redirect_to workflow_path(@workflow) }
         end
       end
     end
@@ -562,10 +562,10 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       if success
         flash[:notice] = "Workflow \"#{workflow_title}\" has been deleted"
-        format.html { redirect_to workflows_url }
+        format.html { redirect_to workflows_path }
       else
         flash[:error] = "Failed to delete Workflow entry \"#{workflow_title}\""
-        format.html { redirect_to workflow_url(@workflow) }
+        format.html { redirect_to workflow_path(@workflow) }
       end
     end
   end
@@ -585,7 +585,7 @@ class WorkflowsController < ApplicationController
       @workflow.add_tag(tag.strip, current_user)
     end
 
-    redirect_to(workflow_url(@workflow))
+    redirect_to(workflow_path(@workflow))
   end
 
   def auto_complete

@@ -124,7 +124,7 @@ module ApplicationHelper
                      :size => user.avatar? ? nil : "#{size}x#{size}"}.merge(image_options)
 
     unless url
-      url = user_url(user)
+      url = user_path(user)
     end
 
     if annotation

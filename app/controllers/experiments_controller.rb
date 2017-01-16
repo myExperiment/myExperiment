@@ -50,7 +50,7 @@ class ExperimentsController < ApplicationController
     respond_to do |format|
       if update_ownership(@experiment) and @experiment.save
         flash[:notice] = "Your new Experiment has successfully been created."
-        format.html { redirect_to experiment_url(@experiment) }
+        format.html { redirect_to experiment_path(@experiment) }
       else
         format.html { render :action => "new" }
       end
@@ -67,7 +67,7 @@ class ExperimentsController < ApplicationController
     respond_to do |format|
       if update_ownership(@experiment) and @experiment.update_attributes(params[:experiment])
         flash[:notice] = "Experiment was successfully updated."
-        format.html { redirect_to experiment_url(@experiment) }
+        format.html { redirect_to experiment_path(@experiment) }
       else
         format.html { render :action => "edit" }
       end
@@ -78,10 +78,10 @@ class ExperimentsController < ApplicationController
     respond_to do |format|
       if @experiment.destroy
         flash[:notice] = "Experiment \"#{@experiment.title}\" has been deleted"
-        format.html { redirect_to experiments_url }
+        format.html { redirect_to experiments_path }
       else
         flash[:error] = "Failed to delete Experiment"
-        format.html { redirect_to experiment_url(@experiment) }
+        format.html { redirect_to experiment_path(@experiment) }
       end
     end
   end

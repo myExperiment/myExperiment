@@ -50,7 +50,7 @@ class RunnersController < ApplicationController
     respond_to do |format|
       if update_runner!(@runner)
         flash[:notice] = "Your Runner of type 'Taverna Enactor' has been successfully registered."
-        format.html { redirect_to runner_url(@runner) }
+        format.html { redirect_to runner_path(@runner) }
       else
         format.html { render :action => "new" }
       end
@@ -67,7 +67,7 @@ class RunnersController < ApplicationController
     respond_to do |format|
       if update_runner!(@runner)
         flash[:notice] = "Your Runner of type 'Taverna Enactor' has been successfully updated."
-        format.html { redirect_to runner_url(@runner) }
+        format.html { redirect_to runner_path(@runner) }
       else
         format.html { render :action => "edit" }
       end
@@ -78,10 +78,10 @@ class RunnersController < ApplicationController
     respond_to do |format|
       if @runner.destroy
         flash[:notice] = "Runner \"#{@runner.title}\" has been deleted"
-        format.html { redirect_to runners_url }
+        format.html { redirect_to runners_path }
       else
         flash[:error] = "Failed to delete Runner"
-        format.html { redirect_to runner_url(@runner) }
+        format.html { redirect_to runner_path(@runner) }
       end
     end
   end

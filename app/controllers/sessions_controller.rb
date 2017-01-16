@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session # clears session[:return_to]
     #flash[:notice] = "You have been logged out. Thank you for using #{Conf.sitename}!"
-    redirect_to home_url
+    redirect_to home_path
   end
   
   # handle the openid server response
@@ -174,7 +174,7 @@ class SessionsController < ApplicationController
       rescue
       end
       respond_to do |format|
-        format.html { redirect_to(params[:return_to].blank? ? home_url : params[:return_to]) }
+        format.html { redirect_to(params[:return_to].blank? ? home_path : params[:return_to]) }
       end
     end
 

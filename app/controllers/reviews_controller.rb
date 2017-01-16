@@ -66,7 +66,7 @@ class ReviewsController < ApplicationController
         Activity.create(:subject => current_user, :action => 'create', :objekt => @review, :auth => @reviewable, :extra => params[:rating].to_i)
         update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
-        format.html { redirect_to workflow_review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_path(@reviewable, @review) }
       else
         format.html { render :action => "new" }
       end
@@ -85,7 +85,7 @@ class ReviewsController < ApplicationController
         Activity.create(:subject => current_user, :action => 'edit', :objekt => @review, :auth => @reviewable, :extra => params[:rating].to_i)
         update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
-        format.html { redirect_to workflow_review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_path(@reviewable, @review) }
       else
         format.html { render :action => "edit" }
       end
@@ -97,7 +97,7 @@ class ReviewsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Review was successfully deleted.'
-      format.html { redirect_to workflow_reviews_url(@reviewable) }
+      format.html { redirect_to workflow_reviews_path(@reviewable) }
     end
   end
   

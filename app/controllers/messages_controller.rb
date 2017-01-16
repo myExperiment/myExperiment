@@ -91,7 +91,7 @@ class MessagesController < ApplicationController
       # can't send a message to the user themself - error
       respond_to do |format|
         flash[:error] = "You cannot send a message to yourself"
-        format.html { redirect_to new_message_url }
+        format.html { redirect_to new_message_path }
       end
     elsif (allowed_plus_timespan = ActivityLimit.check_limit(current_user, "internal_message", false))[0]
       # the user is allowed to send messages - limit not yet reached; show the new message screen 
@@ -179,13 +179,13 @@ class MessagesController < ApplicationController
         end
         
         flash[:notice] = 'Message was successfully sent.'
-        format.html { redirect_to messages_url }
+        format.html { redirect_to messages_path }
       elsif !sending_allowed
         # when redirecting, the check will be carried out again, and full error message displayed to the user
         # (this is an unlikely event - can only happen when the user opens several "new message" pages one
         #  after another and then posts messages from each of them, rather than opening a new one for each
         #  message - therefore, it will not have significant performance effect on running the allowance check again)
-        format.html { redirect_to new_message_url }
+        format.html { redirect_to new_message_path }
       else
         format.html { render :action => "new" }
       end

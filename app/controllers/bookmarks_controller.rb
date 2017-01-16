@@ -30,7 +30,7 @@ class BookmarksController < ApplicationController
     @bookmark.destroy
 
     respond_to do |format|
-      format.html { redirect_to bookmarks_url }
+      format.html { redirect_to bookmarks_path }
     end
   end
   

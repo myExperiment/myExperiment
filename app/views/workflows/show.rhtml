@@ -22,7 +22,7 @@
   <% if @authorised_to_edit -%>
       <li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
       <% if show_edit_workflow_version_button?(@viewing_version) %>
-        <li><%= icon('edit', workflow_version_edit_path(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
+        <li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
       <% end %>
   <% end -%>
   <% if mine?(@workflow) -%>
@@ -66,7 +66,7 @@
 
             <% if @authorised_to_edit %>
                 <p style="text-align: right; color: #666666;">
-                  <%= link_to "Change preview image", workflow_version_edit_path(@workflow.id, @viewing_version.version) %>
+                  <%= link_to "Change preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %>
                 </p>
             <% end %>
           </div>
@@ -76,7 +76,7 @@
           </p>
           <% if @authorised_to_edit %>
               <p style="text-align: right; color: #666666;">
-                <%= link_to "Add a preview image", workflow_version_edit_path(@workflow.id, @viewing_version.version) %>
+                <%= link_to "Add a preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %>
               </p>
           <% end %>
 

@@ -185,7 +185,7 @@ class BlobsController < ApplicationController
                 redirect_to(blob_version_suggestions_path(@blob, @version.version))
               else
                 flash[:notice] = 'File was successfully created.'
-                  redirect_to blob_url(@blob)
+                  redirect_to blob_path(@blob)
               end
             }
 
@@ -256,7 +256,7 @@ class BlobsController < ApplicationController
               redirect_to(blob_version_suggestions_path(@blob, @version.version))
             else
               flash[:notice] = 'File was successfully updated.'
-              redirect_to blob_url(@blob)
+              redirect_to blob_path(@blob)
             end
           }
         else
@@ -276,10 +276,10 @@ class BlobsController < ApplicationController
     respond_to do |format|
       if success
         flash[:notice] = "File has been deleted."
-        format.html { redirect_to blobs_url }
+        format.html { redirect_to blobs_path }
       else
         flash[:error] = "Failed to delete File. Please contact your administrator."
-        format.html { redirect_to blob_url(@blob) }
+        format.html { redirect_to blob_path(@blob) }
       end
     end
   end
@@ -335,7 +335,7 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to blob_url(@blob) }
+      format.html { redirect_to blob_path(@blob) }
     end
   end
   
@@ -349,7 +349,7 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      redirect_url = params[:return_to] ? params[:return_to] : blob_url(@blob)
+      redirect_url = params[:return_to] ? params[:return_to] : blob_path(@blob)
       format.html { redirect_to redirect_url }
     end
   end

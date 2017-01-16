@@ -23,7 +23,7 @@ class PicturesController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Picture was successfully selected as profile picture.'
-      format.html { redirect_to user_pictures_url(@picture.owner) }
+      format.html { redirect_to user_pictures_path(@picture.owner) }
     end
   end
   
@@ -105,7 +105,7 @@ class PicturesController < ApplicationController
     @picture.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_pictures_url(user_id) }
+      format.html { redirect_to user_pictures_path(user_id) }
     end
   end
   
@@ -115,7 +115,7 @@ protected
     if @user
       @pictures = @user.pictures
     elsif logged_in?
-      redirect_to user_pictures_url(current_user)
+      redirect_to user_pictures_path(current_user)
     end
   end
   

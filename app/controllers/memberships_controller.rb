@@ -84,11 +84,11 @@ EOM
     respond_to do |format|
       if @membership.accept!
         flash[:notice] = 'Membership was successfully accepted.'
-        format.html { redirect_to network_url(@membership.network_id) }
+        format.html { redirect_to network_path(@membership.network_id) }
       else
         flash[:error] = "Membership already accepted."
       end
-      format.html { redirect_to network_url(@membership.network_id) }
+      format.html { redirect_to network_path(@membership.network_id) }
     end
   end
   
@@ -190,7 +190,7 @@ EOM
             flash[:notice] = 'Membership was successfully requested.'
           end
 
-          format.html { redirect_to user_membership_url(current_user.id, @membership) }
+          format.html { redirect_to user_membership_path(current_user.id, @membership) }
         else
           format.html { render :action => "new" }
         end
@@ -213,7 +213,7 @@ EOM
     respond_to do |format|
       if @membership.update_attributes(params[:membership])
         flash[:notice] = 'Membership was successfully updated.'
-        format.html { redirect_to user_membership_url(@membership.user_id, @membership) }
+        format.html { redirect_to user_membership_path(@membership.user_id, @membership) }
       else
         format.html { render :action => "edit" }
       end
@@ -343,7 +343,7 @@ protected
   def check_user_present
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
-      redirect_to user_memberships_url(current_user.id)
+      redirect_to user_memberships_path(current_user.id)
     end
   end
 
