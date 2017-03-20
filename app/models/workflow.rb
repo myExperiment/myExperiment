@@ -284,13 +284,13 @@ class Workflow < ActiveRecord::Base
   end
 
   def file_extension(record)
-    if record.processor_class && record.processor_class.default_file_extension
-      ".#{record.processor_class.default_file_extension}"
-    elsif record.file_ext
-      ".#{record.file_ext}"
-    else
-      ".txt"
+    f = record.file_ext
+    if f.blank? && record.processor_class && record.processor_class.default_file_extension
+      f = record.processor_class.default_file_extension
     end
+    f ||= 'txt'
+
+    ".#{f}"
   end
   
   def named_download_url(version = nil)
