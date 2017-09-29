@@ -61,4 +61,22 @@ class NetworksControllerTest < ActionController::TestCase
     assert_equal old_count-1, Network.count   
     assert_redirected_to networks_path
   end
+
+  def test_should_transfer_network_ownership
+    login_as(:john)
+    other_user = users(:jane)
+    put :transfer_ownership, :id => 1, :user_id => other_user.id
+
+    assert_redirected_to network_path(assigns(:network))
+    assert_equal other_user.id, assigns(:network).user_id
+  end
+
+  def test_should_not_transfer_network_ownership_if_not_admin
+    login_as(:jane)
+    other_user = users(:jane)
+    put :transfer_ownership, :id => 1, :user_id => other_user.id
+
+    assert_response :unauthorized
+    assert_not_equal other_user.id, assigns(:network).user_id
+  end
 end

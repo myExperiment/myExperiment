@@ -15,9 +15,9 @@ class NetworksController < ApplicationController
   before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :tag, :content,
                                          :edit, :update, :destroy, :invite, :membership_invite,
-                                         :membership_invite_external, :sync_feed, :subscription]
+                                         :membership_invite_external, :sync_feed, :subscription, :transfer_ownership]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external, :sync_feed]
-  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
+  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy, :transfer_ownership]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
@@ -353,7 +353,6 @@ class NetworksController < ApplicationController
 
   # PUT /networks/1
   def update
-
     params[:network].delete(:user_id)
 
     respond_to do |format|
@@ -365,6 +364,19 @@ class NetworksController < ApplicationController
         format.html { redirect_to network_path(@network) }
       else
         format.html { render :action => "edit" }
+      end
+    end
+  end
+
+  def transfer_ownership
+    respond_to do |format|
+      if @network.update_attribute(:user_id, params[:user_id])
+        Activity.create_activities(:subject => current_user, :action => 'edit', :object => @network)
+        flash[:notice] = 'Ownership was successfully transferred.'
+        format.html { redirect_to network_path(@network) }
+      else
+        flash[:error] = 'Could not transfer ownership.'
+        format.html { render :action => "show" }
       end
     end
   end
