@@ -13,6 +13,7 @@ class Conf
 
   if File.exists?("config/settings.yml")
     @settings = YAML::load_file("config/settings.yml")
+    @settings = {} if @settings.blank?
   else
     @settings = {}
   end

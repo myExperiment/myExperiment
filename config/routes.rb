@@ -221,7 +221,8 @@ ActionController::Routing::Routes.draw do |map|
                  :rate => :post, 
                  :sync_feed => :post,
                  :subscription => [:put, :delete],
-                 :tag => :post } do |network|
+                 :tag => :post,
+                 :transfer_ownership => :put } do |network|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
     network.resources :policies, :controller => 'group_policies'
