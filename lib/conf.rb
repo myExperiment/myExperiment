@@ -98,7 +98,7 @@ class Conf
   end
 
   def self.solr_enable
-    self.fetch_entry('solr_enable')
+    !Rails.env.test? && self.fetch_entry('solr_enable')
   end
 
   def self.smtp
