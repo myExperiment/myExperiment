@@ -242,8 +242,11 @@ class Network < ActiveRecord::Base
         Membership.find_by_user_id_and_network_id(user_id, id).try(:destroy) # delete membership of new owner
       end  
       if (user_id_was)
-        Membership.create(:user_id => user_id_was, :network_id => id,
-                          :administrator => true, :invited_by => User.find(user_id)).accept! # create membership for old owner
+        Membership.new(:user_id => user_id_was, :network_id => id, :invited_by => User.find(user_id)).tap do |m|
+          m.administrator = true
+          m.save
+          m.accept!
+        end # create membership for old owner
       end
     end
   end
