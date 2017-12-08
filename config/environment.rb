@@ -8,14 +8,6 @@ MyExperiment::Application.initialize!
 
 # BELOW COPIED FROM OLD RAILS 2 CONFIG:
 
-# Add new mime types for use in respond_to blocks:
-# Mime::Type.register "text/richtext", :rtf
-# Mime::Type.register "application/x-mobile", :mobile
-
-Mime::Type.register "application/whip-archive", :whip
-Mime::Type.register "application/rdf+xml", :rdf
-Mime::Type.register "application/zip", :zip
-
 # Include your application configuration below
 
 # SMTP configuration
