@@ -148,7 +148,7 @@ class PacksController < ApplicationController
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully created.'
-          format.html { redirect_to pack_url(@pack) }
+          format.html { redirect_to pack_path(@pack) }
         else
           flash[:notice] = "Pack was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
           format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
@@ -178,7 +178,7 @@ class PacksController < ApplicationController
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully updated.'
-          format.html { redirect_to pack_url(@pack) }
+          format.html { redirect_to pack_path(@pack) }
         else
           flash[:error] = policy_err_msg
           format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
@@ -196,10 +196,10 @@ class PacksController < ApplicationController
     respond_to do |format|
       if success
         flash[:notice] = "Pack has been deleted."
-        format.html { redirect_to packs_url }
+        format.html { redirect_to packs_path }
       else
         flash[:error] = "Failed to delete Pack. Please contact your administrator."
-        format.html { redirect_to pack_url(@pack) }
+        format.html { redirect_to pack_path(@pack) }
       end
     end
   end
@@ -217,7 +217,7 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to pack_url(@pack) }
+      format.html { redirect_to pack_path(@pack) }
     end
   end
   
@@ -231,7 +231,7 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      redirect_url = params[:return_to] ? params[:return_to] : pack_url(@pack)
+      redirect_url = params[:return_to] ? params[:return_to] : pack_path(@pack)
       format.html { redirect_to redirect_url }
     end
   end
@@ -330,7 +330,7 @@ class PacksController < ApplicationController
         
         if entry.save
           flash[:notice] = 'Successfully updated item entry.'
-          format.html { redirect_to pack_url(@pack) }
+          format.html { redirect_to pack_path(@pack) }
         else
           @item_entry = entry
           flash.now[:error] = 'Failed to update item entry.'
@@ -338,7 +338,7 @@ class PacksController < ApplicationController
         end
       else
         flash[:error] = "Failed to update item entry."
-        format.html { redirect_to pack_url(@pack) }
+        format.html { redirect_to pack_path(@pack) }
       end
     end
   end
@@ -355,10 +355,10 @@ class PacksController < ApplicationController
       if entry
         entry.destroy
         flash[:notice] = "Successfully deleted item entry."
-        format.html { redirect_to pack_url(@pack) }
+        format.html { redirect_to pack_path(@pack) }
       else
         flash[:error] = "Failed to delete item entry."
-        format.html { redirect_to pack_url(@pack) }
+        format.html { redirect_to pack_path(@pack) }
       end
     end
   end
@@ -379,7 +379,7 @@ class PacksController < ApplicationController
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save
           flash[:notice] = 'Item succesfully added to pack.'
-          format.html { redirect_to pack_url(@pack) }
+          format.html { redirect_to pack_path(@pack) }
           format.js   { render :layout => false }
         else
           copy_errors(entry.errors, errors)

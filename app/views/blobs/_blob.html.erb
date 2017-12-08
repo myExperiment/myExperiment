@@ -24,7 +24,7 @@
 	  <tr>
 	    <td colspan="2">
 	      <% if Authorization.check('download', blob, current_user) %><%= icon "download", download_blob_path(blob) %> <% end %>
-	      <% if Authorization.check('view', blob, current_user) %><%= icon "show", blob_url(blob), nil, nil, "View" %> <% end %>
+	      <% if Authorization.check('view', blob, current_user) %><%= icon "show", blob_path(blob), nil, nil, "View" %> <% end %>
 	      <% if logged_in? and Authorization.check('edit', blob, current_user) %><%= icon "edit", edit_blob_path(blob) %> <% end %>
 	      <% if logged_in? and blob.owner?(current_user) %><%= icon "destroy", blob_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
 	    </td>

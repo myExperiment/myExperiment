@@ -69,7 +69,7 @@ class GroupAnnouncementsController < ApplicationController
         Activity.create_activities(:subject => @announcement.user, :action => 'create', :object => @announcement)
 
         flash[:notice] = 'Group announcement was successfully created.'
-        format.html { redirect_to network_group_announcements_url(@group) }
+        format.html { redirect_to group_announcements_path(@group) }
       else
         format.html { render :action => "new" }
       end
@@ -84,7 +84,7 @@ class GroupAnnouncementsController < ApplicationController
         Activity.create_activities(:subject => @announcement.user, :action => 'edit', :object => @announcement)
 
         flash[:notice] = 'GroupAnnouncement was successfully updated'
-        format.html { redirect_to network_group_announcement_url(@group, @announcement) }
+        format.html { redirect_to group_announcement_path(@group, @announcement) }
       else
         format.html { render :action => "edit" }
       end
@@ -97,7 +97,7 @@ class GroupAnnouncementsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = "Group announcement was successfully deleted"
-      format.html { redirect_to network_group_announcements_url(@group) }
+      format.html { redirect_to group_announcements_path(@group) }
     end
   end
   

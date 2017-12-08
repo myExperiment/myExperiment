@@ -1,11 +1,11 @@
-# myExperiment: lib/workflow_processors/knime.rb
+# myExperiment: lib/workflow_processors/kepler.rb
 #
-# Copyright (c) 2016 University of Manchester and the University of Southampton.
+# Copyright (c) 2017 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
 module WorkflowProcessors
 
-  class Knime < WorkflowProcessors::Interface
+  class Kepler < WorkflowProcessors::Interface
 
     # Begin Class Methods
 
@@ -14,25 +14,25 @@ module WorkflowProcessors
 
     # MUST be unique across all processors
     def self.display_name
-      "KNIME"
+      "Kepler"
     end
 
     def self.display_data_format
-      "ZIP"
+      "XML"
     end
 
     def self.mime_type
-      "application/zip"
+      "application/octet-stream"
     end
 
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
-      [ "zip", "knwf", "knar" ]
+      [ "xml", "kar" ]
     end
 
     def self.default_file_extension
-      "zip"
+      "xml"
     end
 
     def self.can_determine_type_from_file?

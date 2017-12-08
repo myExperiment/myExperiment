@@ -92,7 +92,7 @@ module ApplicationHelper
     
     name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
     
-    return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
+    return link_to(h(name), user_path(user), :title => tooltip_title_attrib(h(user.name)))
   end
   
   def title(network_id, truncate_to=nil)
@@ -106,7 +106,7 @@ module ApplicationHelper
     end
     
     title = truncate_to ? truncate(network.title, :length => truncate_to) : network.title
-    return link_to(h(title), network_url(network))
+    return link_to(h(title), network_path(network))
   end
   
   def avatar(user_id, size=200, url=nil, annotation = nil, image_options = {})
@@ -124,7 +124,7 @@ module ApplicationHelper
                      :size => user.avatar? ? nil : "#{size}x#{size}"}.merge(image_options)
 
     unless url
-      url = user_url(user)
+      url = user_path(user)
     end
 
     if annotation
@@ -138,7 +138,8 @@ module ApplicationHelper
     url_for(:controller => 'pictures',
             :action => 'show',
             :id => picture_id,
-            :size => "#{size}x#{size}")
+            :size => "#{size}x#{size}",
+            :only_path => true)
   end
   
   def null_avatar(size=200, alt="Anonymous")
@@ -170,10 +171,14 @@ module ApplicationHelper
          "Request Membership")
   end
 
+  def request_friendship_link(user_id)
+    link_to("Request Friendship", new_user_friendship_path(:user_id => user_id))
+  end
+  
   def versioned_resource_link(resource, version_number, long_description=true)
     ver = resource.find_version(version_number)
     if ver
-      url = polymorphic_url(resource, :version => version_number)
+      url = polymorphic_path(resource, :version => version_number)
     else
       return nil
     end
@@ -283,13 +288,13 @@ module ApplicationHelper
           name = h(b.local_name)
         end
         
-        return link ? link_to(name, blob_url(b)) : name
+        return link ? link_to(name, blob_path(b)) : name
       else
         return nil
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
+        return link ? link_to(h(p.title), pack_path(p)) : h(p.title)
       else
         return nil
       end
@@ -311,7 +316,7 @@ module ApplicationHelper
           dot = ""
         end
         
-        return link ? link_to(name, workflow_url(w)) : name
+        return link ? link_to(name, workflow_path(w)) : name
       else
         return nil
       end
@@ -628,9 +633,9 @@ module ApplicationHelper
   def license_icon_link(license)
     case license.unique_name
     when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
-      "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
+      "<a rel=\"Copyright\" href=\"#{license_path(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
     else
-      "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
+      "<a rel=\"Copyright\" href=\"#{license_path(license)}\">#{license.title}</a>"
     end.html_safe
   end
   
@@ -829,7 +834,7 @@ module ApplicationHelper
     filename = method_to_icon_filename("download")
     link_to image_tag(filename, :alt => "Download", :title => tooltip_title_attrib(title), :style => "vertical-align: middle; padding: 0;" + style), url
   end
-  
+
   # Based on: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
   # options
   # :start_date, sets the time to measure against, defaults to now
@@ -885,11 +890,12 @@ module ApplicationHelper
   def currentusers_things_url(klass)
     return nil unless current_user
     if Conf.contributable_models.include?(klass)
-      return polymorphic_url([current_user, klass.pluralize.underscore.to_sym])
+      return polymorphic_path([current_user, klass.pluralize.underscore.to_sym])
     else
       return url_for(:controller => 'users',
                      :id => current_user.id,
-                     :action => controller_visible_name(klass))
+                     :action => controller_visible_name(klass),
+                     :only_path => true)
     end
   end
   

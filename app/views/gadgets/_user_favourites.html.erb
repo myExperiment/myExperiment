@@ -4,7 +4,7 @@
 <li class="dropdown-header">Favourites</li>
 <% bookmarkables.each do |instance| %>
     <li>
-      <% link_to contributable_url(instance.id, instance.class.name), :title => contributable_name(instance.id, instance.class.name) do %>
+      <% link_to contributable_path(instance.id, instance.class.name), :title => contributable_name(instance.id, instance.class.name) do %>
           <%= basic_icon instance.class.name.downcase, nil, :style => "float: right" %>
           <%= contributable_name(instance.id, instance.class.name, gadget_characters_limit) %>
       <% end %>

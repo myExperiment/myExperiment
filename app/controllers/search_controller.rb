@@ -42,7 +42,7 @@ class SearchController < ApplicationController
       when 'workflows'
         redirect_to(workflows_path(:query => params[:query]))
       when 'files'
-        redirect_to(blobs_url(:query => params[:query]))
+        redirect_to(blobs_path(:query => params[:query]))
       when 'packs'
         redirect_to(packs_path(:query => params[:query]))
       when 'services'

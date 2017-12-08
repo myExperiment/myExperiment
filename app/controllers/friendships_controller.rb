@@ -46,7 +46,7 @@ class FriendshipsController < ApplicationController
         flash[:error] = "Friendship already accepted."
       end
 
-      format.html { redirect_to user_friendships_url(current_user.id) }
+      format.html { redirect_to user_friendships_path(current_user.id) }
     end
   end
   
@@ -101,12 +101,12 @@ class FriendshipsController < ApplicationController
     if friendship_already_exists
       respond_to do |format|
         flash[:error] = "Friendship not created (already exists)."
-        format.html { redirect_to new_user_friendship_url(current_user.id) }
+        format.html { redirect_to new_user_friendship_path(current_user.id) }
       end
     elsif params[:friendship][:friend_id] == params[:friendship][:user_id]
       respond_to do |format|
         flash[:error] = "You cannot add yourself as a friend."
-        format.html { redirect_to new_user_friendship_url(current_user.id) }
+        format.html { redirect_to new_user_friendship_path(current_user.id) }
       end
     else
       @friendship = Friendship.new(params[:friendship])
@@ -128,7 +128,7 @@ class FriendshipsController < ApplicationController
           end
           
           flash[:notice] = 'Friendship was successfully requested.'
-          format.html { redirect_to user_friendship_url(current_user.id, @friendship) }
+          format.html { redirect_to user_friendship_path(current_user.id, @friendship) }
         else
           format.html { render :action => "new" }
         end
@@ -145,7 +145,7 @@ class FriendshipsController < ApplicationController
     respond_to do |format|
       if @friendship.update_attributes(params[:friendship])
         flash[:notice] = 'Friendship was successfully updated.'
-        format.html { redirect_to user_friendship_url(@friendship.user_id, @friendship) }
+        format.html { redirect_to user_friendship_path(@friendship.user_id, @friendship) }
       else
         format.html { render :action => "edit" }
       end
@@ -178,7 +178,7 @@ class FriendshipsController < ApplicationController
       body += "<hr/>"
     else
       subject = User.find(from_id).name + " has removed you from their friends list"
-      body = "User: <a href='#{user_url(from_id)}'>#{friend.name}</a>" +
+      body = "User: <a href='#{user_path(from_id)}'>#{friend.name}</a>" +
              "<br/><br/>If you want to contact this user directly, just reply to this message."
     end
     
@@ -191,7 +191,7 @@ class FriendshipsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = "Friendship was successfully deleted"
-      format.html { redirect_to(params[:return_to] ? params[:return_to] : user_friendships_url(friend_id)) }
+      format.html { redirect_to(params[:return_to] ? params[:return_to] : user_friendships_path(friend_id)) }
     end
   end
   
@@ -202,7 +202,7 @@ protected
   def check_user_present
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
-      redirect_to user_friendships_url(current_user.id)
+      redirect_to user_friendships_path(current_user.id)
     end
   end
 

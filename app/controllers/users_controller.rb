@@ -281,7 +281,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = 'User account was successfully deleted'
-      format.html { redirect_to(params[:return_to] ? "#{Conf.base_uri}#{params[:return_to]}" : users_url) }
+      format.html { redirect_to(params[:return_to] ? "#{Conf.base_uri}#{params[:return_to]}" : users_path) }
     end
   end
   
@@ -317,7 +317,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if confirmed
         flash[:notice] = "Thank you for confirming your email address.  Welcome to #{Conf.sitename}!"
-        format.html { redirect_to user_url(@user) }
+        format.html { redirect_to user_path(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
         format.html { redirect_to(:controller => "session", :action => "new") }

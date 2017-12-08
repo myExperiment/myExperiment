@@ -36,7 +36,7 @@ class ProfilesController < ApplicationController
     else
       flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
       respond_to do |format|
-        format.html { redirect_to profile_url(@profile) }
+        format.html { redirect_to profile_path(@profile) }
       end
     end
   end
@@ -56,7 +56,7 @@ class ProfilesController < ApplicationController
       respond_to do |format|
         if @profile.save
           flash[:notice] = 'Profile was successfully created.'
-          format.html { redirect_to user_profile_url(@profile) }
+          format.html { redirect_to user_profile_path(@profile) }
         else
           format.html { render :action => "new" }
         end
@@ -64,7 +64,7 @@ class ProfilesController < ApplicationController
     else
       flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
       respond_to do |format|
-        format.html { redirect_to profile_url(@profile) }
+        format.html { redirect_to profile_path(@profile) }
       end
     end
   end
@@ -94,7 +94,7 @@ class ProfilesController < ApplicationController
     @profile.destroy
   
     respond_to do |format|
-      format.html { redirect_to profiles_url }
+      format.html { redirect_to profiles_path }
     end
   end
   
@@ -107,7 +107,7 @@ protected
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "User not found"
       respond_to do |format|
-        format.html { redirect_to users_url }
+        format.html { redirect_to users_path }
       end
     end
   end
@@ -116,7 +116,7 @@ protected
     if current_user != @user
       flash[:error] = "You are not authorized to perform this action"
       respond_to do |format|
-        format.html { redirect_to profile_url(@profile) }
+        format.html { redirect_to profile_path(@profile) }
       end
     end
   end

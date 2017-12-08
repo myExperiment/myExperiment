@@ -34,7 +34,7 @@
       <div class="fold" id="add_to_pack_fold">
         <div class="foldTitle">Add to your Pack</div>
         <div class="foldContent" style="display: none;">
-          <%= form_tag quick_add_pack_url(potential_packs.first),
+          <% form_tag quick_add_pack_path(potential_packs.first),
                       { :onsubmit => "new Ajax.Request(this.action, " +
                                      "{asynchronous:true, evalScripts:true, method:'post', "+
                                      "onComplete:function(request){$('pack_add_spinner').hide();},"+
@@ -45,7 +45,7 @@
             <p>
               <select id="add_to_pack_selector" style="width: 99%" onchange="$('add_to_pack_form').action = $(this).options[this.selectedIndex].value; return false">
                 <% potential_packs.sort_by(&:updated_at).reverse!.each do |p| -%>
-                  <option value="<%= quick_add_pack_url(p) -%>">
+                  <option value="<%= quick_add_pack_path(p) -%>">
                     <%= h(p.title) -%>
                   </option>
                 <% end -%>
@@ -55,7 +55,7 @@
               Comment:
               <%= text_area_tag :comment, nil, :style => "width: 98%" %>
             </p>
-            <%= hidden_field_tag :uri, polymorphic_url(contributable) %>
+            <%= hidden_field_tag :uri, polymorphic_path(contributable) %>
             <%= submit_tag "Next" -%>
             <img id="pack_add_spinner" src="/images/spinner.gif" style="display:none; vertical-align: middle;"/>
           <% end %>
@@ -63,6 +63,6 @@
       </div>
     <% end %>
 	<% else -%>
-		<p><small><b><%= link_to "Log in", new_session_url -%></b> to add to one of your Packs</small></p>
+		<p><small><b><%= link_to "Log in", new_session_path -%></b> to add to one of your Packs</small></p>
 	<% end -%>
 </div>

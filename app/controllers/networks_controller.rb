@@ -16,9 +16,9 @@ class NetworksController < ApplicationController
   before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :tag, :content,
                                          :edit, :update, :destroy, :invite, :membership_invite,
-                                         :membership_invite_external, :sync_feed, :subscription]
+                                         :membership_invite_external, :sync_feed, :subscription, :transfer_ownership]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external, :sync_feed]
-  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
+  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy, :transfer_ownership]
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
@@ -80,7 +80,7 @@ class NetworksController < ApplicationController
             format.html { render :nothing => true, :status => 200 }
           else
             flash[:notice] = 'An invitation has been sent to the User.'
-            format.html { redirect_to network_url(@network) }
+            format.html { redirect_to network_path(@network) }
           end
         end
       else
@@ -89,7 +89,7 @@ class NetworksController < ApplicationController
             format.html { render :nothing => :true, :status => 400 }
           else
             flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
-            format.html { redirect_to invite_network_url(@network) }
+            format.html { redirect_to invite_network_path(@network) }
           end
         end
       end
@@ -103,7 +103,7 @@ class NetworksController < ApplicationController
         if request.xhr?
           format.html { render :nothing => :true, :status => 403 }
         else
-          format.html { redirect_to invite_network_url(@network) }
+          format.html { redirect_to invite_network_path(@network) }
         end
       end
     end
@@ -281,7 +281,7 @@ class NetworksController < ApplicationController
 
       format.atom {
         @title = @network.title
-        @id = @resource = network_url(@network)
+        @id = @resource = network_path(@network)
         @updated = @network.updated_at.to_datetime.rfc3339
         @entries = activities_for_feed(:context => @network, :user => current_user, :no_combine => true)
 
@@ -341,7 +341,7 @@ class NetworksController < ApplicationController
           replace_tags(@network, current_user, convert_tags_to_gem_format(params[:tag_list]))
         end
         flash[:notice] = 'Group was successfully created.'
-        format.html { redirect_to network_url(@network) }
+        format.html { redirect_to network_path(@network) }
       else
         format.html { render :action => "new" }
       end
@@ -350,7 +350,6 @@ class NetworksController < ApplicationController
 
   # PUT /networks/1
   def update
-
     params[:network].delete(:user_id)
 
     respond_to do |format|
@@ -359,9 +358,22 @@ class NetworksController < ApplicationController
         update_feed_definition(@network, params)
         replace_tags(@network, current_user, convert_tags_to_gem_format(params[:tag_list])) if params[:tag_list]
         flash[:notice] = 'Group was successfully updated.'
-        format.html { redirect_to network_url(@network) }
+        format.html { redirect_to network_path(@network) }
       else
         format.html { render :action => "edit" }
+      end
+    end
+  end
+
+  def transfer_ownership
+    respond_to do |format|
+      if @network.update_attribute(:user_id, params[:user_id])
+        Activity.create_activities(:subject => current_user, :action => 'edit', :object => @network)
+        flash[:notice] = 'Ownership was successfully transferred.'
+        format.html { redirect_to network_path(@network) }
+      else
+        flash[:error] = 'Could not transfer ownership.'
+        format.html { render :action => "show" }
       end
     end
   end
@@ -372,7 +384,7 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Group was successfully deleted.'
-      format.html { redirect_to networks_url }
+      format.html { redirect_to networks_path }
     end
   end
 

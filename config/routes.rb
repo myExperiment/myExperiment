@@ -210,6 +210,7 @@ MyExperiment::Application.routes.draw do
       put :subscription
       delete :subscription
       post :tag
+      put :transfer_ownership
     end
 
     resources :group_announcements, :path => 'announcements'

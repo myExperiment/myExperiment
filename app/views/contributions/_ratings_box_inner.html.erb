@@ -16,6 +16,6 @@
 		<% end %>
 	<% else %>
 		<%= render :partial => 'ratings/current', :locals => { :rateable => contributable } %>
-		<p><small><b><%= link_to "Log in", new_session_url -%></b> to rate and see breakdown of ratings</small></p>
+		<p><small><b><%= link_to "Log in", new_session_path -%></b> to rate and see breakdown of ratings</small></p>
 	<% end %>
 </center>

@@ -52,7 +52,7 @@ class CitationsController < ApplicationController
 
         Activity.create(:subject => current_user, :action => 'create', :objekt => @citation, :auth => @workflow)
         flash[:notice] = 'Citation was successfully created.'
-        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_path(@workflow, @citation) }
       else
         format.html { render :action => "new" }
       end
@@ -65,7 +65,7 @@ class CitationsController < ApplicationController
       if @citation.update_attributes(params[:citation])
         Activity.create(:subject => current_user, :action => 'edit', :objekt => @citation, :auth => @workflow)
         flash[:notice] = 'Citation was successfully updated.'
-        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_path(@workflow, @citation) }
       else
         format.html { render :action => "edit" }
       end
@@ -78,7 +78,7 @@ class CitationsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Citation was successfully deleted.'
-      format.html { redirect_to workflow_citations_url(@workflow) }
+      format.html { redirect_to workflow_citations_path(@workflow) }
     end
   end
   
