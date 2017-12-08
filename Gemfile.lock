@@ -1,18 +1,18 @@
 GIT
-  remote: git://github.com/SysMO-DB/white_list.git
+  remote: https://github.com/SysMO-DB/white_list.git
   revision: 3f9798ec54f227e852b944bb14f6f90d05cde893
   specs:
     white_list (1.0.0)
 
 GIT
-  remote: git://github.com/marcandre/auto_complete.git
+  remote: https://github.com/marcandre/auto_complete.git
   revision: 86ec4c21c2736ebe8f16f3684afb457fe25ae2d5
   specs:
     auto_complete (0.0.2)
       rails (>= 3.1)
 
 GIT
-  remote: git://github.com/myExperiment/white_list_formatted_content.git
+  remote: https://github.com/myExperiment/white_list_formatted_content.git
   revision: 46af566a4011816b56f1f6a69cfb629f210f6569
   specs:
     white_list_formatted_content (1.0.2)
@@ -282,4 +282,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   1.11.2
+   1.13.7

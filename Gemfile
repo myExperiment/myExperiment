@@ -42,11 +42,11 @@ gem 'rails_autolink'
 
 gem 'acts_as_commentable'
 gem "RedCloth","4.2.9"
-gem 'white_list', :git => "git://github.com/SysMO-DB/white_list.git"
-gem 'white_list_formatted_content', :git => "git://github.com/myExperiment/white_list_formatted_content.git"
+gem 'white_list', :git => "https://github.com/SysMO-DB/white_list.git"
+gem 'white_list_formatted_content', :git => "https://github.com/myExperiment/white_list_formatted_content.git"
 gem 'country-select'
 gem "rails3-restful-authentication", "~> 3.0.1"
-gem 'auto_complete', :git => "git://github.com/marcandre/auto_complete.git"
+gem 'auto_complete', :git => "https://github.com/marcandre/auto_complete.git"
 
 gem "thin"
 
