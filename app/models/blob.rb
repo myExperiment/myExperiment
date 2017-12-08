@@ -3,11 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'acts_as_contributable'
-require 'acts_as_site_entity'
-require 'acts_as_creditable'
-require 'acts_as_attributor'
-require 'acts_as_attributable'
+
 require 'sunspot_rails'
 
 require 'has_research_object'

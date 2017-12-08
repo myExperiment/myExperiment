@@ -3,11 +3,6 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'acts_as_contributable'
-require 'acts_as_site_entity'
-require 'acts_as_creditable'
-require 'acts_as_attributable'
-require 'acts_as_doi_mintable'
 require 'uri'
 require 'zip/zip'
 require 'tempfile'

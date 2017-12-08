@@ -3,9 +3,6 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'acts_as_contributor'
-require 'acts_as_creditor'
-require 'acts_as_site_entity'
 require 'sunspot_rails'
 
 class Network < ActiveRecord::Base

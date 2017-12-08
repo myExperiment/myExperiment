@@ -4,10 +4,6 @@
 # See license.txt for details.
 
 require 'digest/sha1'
-
-require 'acts_as_site_entity'
-require 'acts_as_contributor'
-require 'acts_as_creditor'
 require 'sunspot_rails'
 
 class User < ActiveRecord::Base
@@ -62,8 +58,12 @@ class User < ActiveRecord::Base
   alias_method(:tags, :owned_tags)
   alias_method(:taggings, :owned_taggings)
 
-  acts_as_bookmarker
-  
+  has_many :bookmarks, :order => "created_at DESC", :dependent => :destroy
+
+  def bookmarked_items
+    bookmarks.map(&:bookmarkable)
+  end
+
   has_many :ratings,
            :order => "created_at DESC",
            :dependent => :destroy

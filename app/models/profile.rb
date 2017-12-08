@@ -3,8 +3,6 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'acts_as_site_entity'
-
 class Profile < ActiveRecord::Base
 
   attr_accessible :picture, :picture_id, :email, :user_id
