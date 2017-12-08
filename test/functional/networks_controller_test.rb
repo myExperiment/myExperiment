@@ -69,6 +69,7 @@ class NetworksControllerTest < ActionController::TestCase
 
     assert_redirected_to network_path(assigns(:network))
     assert_equal other_user.id, assigns(:network).user_id
+    assert_includes assigns(:network).members, users(:john)
   end
 
   def test_should_not_transfer_network_ownership_if_not_admin

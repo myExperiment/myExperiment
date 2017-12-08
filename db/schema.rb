@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150610085354) do
+ActiveRecord::Schema.define(:version => 20171208230205) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -358,6 +358,7 @@ ActiveRecord::Schema.define(:version => 20150610085354) do
     t.datetime "network_established_at"
     t.string   "message",                :limit => 500
     t.boolean  "administrator",                         :default => false
+    t.integer  "inviter_id"
   end
 
   add_index "memberships", ["network_id"], :name => "index_memberships_on_network_id"
@@ -385,7 +386,6 @@ ActiveRecord::Schema.define(:version => 20150610085354) do
     t.text     "description"
     t.text     "description_html"
     t.string   "new_member_policy", :default => "open"
-    t.integer  "inviter_id"
   end
 
   add_index "networks", ["user_id"], :name => "index_networks_on_user_id"
