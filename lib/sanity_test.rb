@@ -52,13 +52,13 @@ def sanity_tests
   @results = [ ]
   @results_string = ""
 
-  users         = User.find(:all)
-  workflows     = Workflow.find(:all)
-  blobs         = Blob.find(:all)
-  packs         = Pack.find(:all)
-  contributions = Contribution.find(:all)
+  users         = User.all
+  workflows     = Workflow.all
+  blobs         = Blob.all
+  packs         = Pack.all
+  contributions = Contribution.all
 
-  known_contributables = workflows + blobs + packs + services
+  known_contributables = workflows + blobs + packs
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)
