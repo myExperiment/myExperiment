@@ -15,7 +15,7 @@ class Profile < ActiveRecord::Base
   
   validates_associated :picture
   
-  validates_format_of :website, :with => /^http:\/\//, :message => "must begin with http://", :if => Proc.new { |profile| !profile.website.blank? }
+  validates_format_of :website, :with => /^https?:\/\//, :message => "must begin with http(s)://", :if => Proc.new { |profile| !profile.website.blank? }
   
   validates_each :picture_id do |record, attr, value|
     # picture_id = nil  => null avatar
