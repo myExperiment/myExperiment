@@ -108,7 +108,7 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @user = User.new
+    @user = User.new(:receive_notifications => false)
     
     # default values in case not supplied, or contain an error
     @email_value = ""
