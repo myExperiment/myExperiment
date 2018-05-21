@@ -144,7 +144,7 @@ class UsersController < ApplicationController
 
     unless RAILS_ENV == 'test'
       if Conf.recaptcha_enable
-        if !verify_recaptcha(:private_key => Conf.recaptcha_private)
+        if !new_verify_recaptcha(:private_key => Conf.recaptcha_private)
           flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
           render :action => 'new'
           return
@@ -426,7 +426,7 @@ class UsersController < ApplicationController
   def process_invitations
     # first of all, check that captcha was entered correctly
     captcha_verified = false
-    if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
+    if Conf.recaptcha_enable && !new_verify_recaptcha(:private_key => Conf.recaptcha_private)
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }

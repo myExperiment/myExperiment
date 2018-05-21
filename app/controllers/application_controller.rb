@@ -641,4 +641,72 @@ class ApplicationController < ActionController::Base
     @layout["layout"]
   end
 
+  private
+
+  def new_verify_recaptcha(options = {})
+    if !options.is_a? Hash
+      options = {:model => options}
+    end
+
+    env = options[:env] || ENV['RAILS_ENV']
+    return true if Recaptcha.configuration.skip_verify_env.include? env
+    model = options[:model]
+    attribute = options[:attribute] || :base
+    private_key = options[:private_key] || Recaptcha.configuration.private_key
+    raise Recaptcha::RecaptchaError, "No private key specified." unless private_key
+
+    begin
+      body = nil
+      Timeout::timeout(options[:timeout] || 3) do
+        body = RestClient.post('https://www.google.com/recaptcha/api/siteverify', {
+            'secret'   => private_key,
+            'remoteip' => request.remote_ip,
+            'response' => params['g-recaptcha-response']
+        })
+      end
+
+      response = JSON.parse(body)
+      error = response['error-codes'] ? response['error-codes'].first : nil
+      if response['success'] && response['success'] != 'false'
+        flash.delete(:recaptcha_error)
+        return true
+      else
+        flash[:recaptcha_error] = if defined?(I18n)
+                                    I18n.translate("recaptcha.errors.#{error}", {:default => error})
+                                  else
+                                    error
+                                  end
+
+        if model
+          message = "Word verification response is incorrect, please try again."
+          message = I18n.translate('recaptcha.errors.verification_failed', {:default => message}) if defined?(I18n)
+          model.errors.add attribute, options[:message] || message
+        end
+        return false
+      end
+    rescue Timeout::Error
+      if Recaptcha.configuration.handle_timeouts_gracefully
+        flash[:recaptcha_error] = if defined?(I18n)
+                                    I18n.translate('recaptcha.errors.recaptcha_unreachable', {:default => 'Recaptcha unreachable.'})
+                                  else
+                                    'Recaptcha unreachable.'
+                                  end
+
+        if model
+          message = "Oops, we failed to validate your word verification response. Please try again."
+          message = I18n.translate('recaptcha.errors.recaptcha_unreachable', :default => message) if defined?(I18n)
+          model.errors.add attribute, options[:message] || message
+        end
+        return false
+      else
+        raise Recaptcha::RecaptchaError, "Recaptcha unreachable."
+      end
+    rescue Exception => e
+      if Rails.env == 'production'
+        raise e
+      else
+        raise Recaptcha::RecaptchaError, e.message, e.backtrace
+      end
+    end
+  end
 end

@@ -17,5 +17,8 @@ module UsersHelper
     
     return( url )
   end
-  
+
+  def new_recaptcha_tags(opts)
+    content_tag(:div, '', { :class => 'g-recaptcha', 'data-sitekey' => opts[:public_key] })
+  end
 end

@@ -86,7 +86,7 @@ GEM
       rdf (>= 1.0.7)
     rdoc (4.0.1)
       json (~> 1.4)
-    recaptcha (0.3.5)
+    recaptcha (0.3.6)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -157,3 +157,6 @@ DEPENDENCIES
   taverna-t2flow (~> 0.5.0)
   wf4ever-transformation-client (~> 0.3.0)
   will_paginate (~> 2.3.16)
+
+BUNDLED WITH
+   1.13.6

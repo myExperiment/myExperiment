@@ -113,7 +113,7 @@ class NetworksController < ApplicationController
   # POST /networks/1;membership_invite_external
   def membership_invite_external
     # first of all, check that captcha was entered correctly
-    if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
+    if Conf.recaptcha_enable && !new_verify_recaptcha(:private_key => Conf.recaptcha_private)
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }
@@ -162,7 +162,7 @@ class NetworksController < ApplicationController
       db_user_addresses.each { |db_addr, user|
         if db_addr == current_user.email
           own_address_err += db_addr
-        elsif Network.find(params[:id]).member?(user) || User.find(usr_id).membership_pending?(params[:id]) # email doesn't belong to current user
+        elsif Network.find(params[:id]).member?(user) || User.find(user.id).membership_pending?(params[:id]) # email doesn't belong to current user
           # the invited user is already a member of that group
           existing_db_addr_existing_membership_err_list << db_addr
         else

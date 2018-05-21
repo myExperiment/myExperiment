@@ -49,7 +49,7 @@
 			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"><%= params[:content] %></textarea><br/>
 		<% if !logged_in? %>
 			<% if Conf.recaptcha_enable -%>
-				<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+				<%= new_recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
 			<% end %>
 		<% end %>
 		  <br/><br>

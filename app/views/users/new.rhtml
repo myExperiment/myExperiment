@@ -29,7 +29,7 @@
   <% if Conf.recaptcha_enable -%>
     <center>
       <h2>Anti-spam verification</h2>
-      <%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%> 
+      <%= new_recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
     </center>
 
     <br />

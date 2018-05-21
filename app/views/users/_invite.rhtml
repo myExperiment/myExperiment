@@ -27,7 +27,7 @@
 			<tr>
 				<td>
 		<% if Conf.recaptcha_enable -%>
-			<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+			<%= new_recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
 		<% end %>
 				</td>
 			</tr>

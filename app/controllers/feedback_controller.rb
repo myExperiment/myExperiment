@@ -23,7 +23,7 @@ class FeedbackController < ApplicationController
         format.html { redirect_to "/feedback" }
       end
     else
-      if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
+      if Conf.recaptcha_enable && !new_verify_recaptcha(:private_key => Conf.recaptcha_private)
         respond_to do |format|
           flash[:error] = 'Your feedback has not been submitted. CAPTCHA was not entered correctly.'
           format.html { redirect_to "/feedback?from="+String(params[:from])+"&email="+String(params[:email])+"&subject="+String(params[:subject])+"&content="+String(params[:content]) }

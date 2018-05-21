@@ -127,7 +127,7 @@
 
             <% if Conf.recaptcha_enable -%>
               <center>
-                <%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+                <%= new_recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
               </center>
             <% end -%>
 

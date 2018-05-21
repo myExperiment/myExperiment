@@ -23,6 +23,10 @@
   <%= render :partial => "layouts/feed_link_tags" %>
 
   <%= yield :head_options -%>
+
+  <% if Conf.recaptcha_enable %>
+    <script src='//www.google.com/recaptcha/api.js'></script>
+  <% end %>
 </head>
 <body>
 
