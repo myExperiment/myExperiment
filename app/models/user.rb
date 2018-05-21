@@ -113,7 +113,6 @@ class User < ActiveRecord::Base
   attr_accessor :password
 
   validates_presence_of     :name
-  
   validates_presence_of     :username,                   :if => :not_openid?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
@@ -322,8 +321,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  validates_presence_of :name
-  
   has_one :profile,
           :dependent => :destroy
           

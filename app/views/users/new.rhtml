@@ -50,15 +50,13 @@
 							<div class="box_simple">
 								<p style="color: #990000; font-weight: bold; font-size: 108%;">First...</p>
 								<p>
-								  <b>Given name</b>
+								  <b>Display name</b>
 									<br />
-								  <%= f.text_field :given_name %>
+								  <%= f.text_field :name %>
 								</p>
-								<p>
-								  <b>Family name</b>
-									<br />
-								  <%= f.text_field :family_name %>
-								</p>
+                <p style="font-size: 85%; color: #333333;">
+                  The name that will be displayed to other visitors of the site.
+                </p>
 								<p>
 									<b>Email address</b>:
 									<span style="margin-left: 0.5em; font-size: 85%; vertical-align: middle;"><%= link_to_function "Why?" + expand_image("0.2em"), visual_effect(:toggle_blind, "email_why", :duration => 0.3) %></span>
@@ -182,14 +180,9 @@
 				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your <%= Conf.sitename %> account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
 			</p>
       <p>
-        <strong>Given name</strong>
+        <b>Display name</b>
         <br />
-        <%= text_field_tag :given_name, nil, :size => 32 %>
-      </p>
-      <p>
-        <strong>Family name</strong>
-        <br />
-        <%= text_field_tag :family_name, nil, :size => 32 %>
+        <%= text_field_tag :name %>
       </p>
 			<p>
 				<strong>OpenID</strong><br/>

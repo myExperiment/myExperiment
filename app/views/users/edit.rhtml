@@ -37,11 +37,10 @@
     <br/>
     <i>Your account can have either of these or even both registered, as below.</i>
 </p>
-<center>
-<table>
+<table width="100%">
     <tr style="vertical-align: top;">
         <td style="width: 50%;">
-            <h2 style="width: 275px"><%= Conf.sitename %> username / password</h2>
+            <h2><%= Conf.sitename %> username / password</h2>
             <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 						<%= hidden_field_tag(:update_type, "upd_t_up") -%>
             <center>
@@ -69,7 +68,7 @@
             <% end %>
         </td>
         <td style="width: 50%;">
-            <h2 style="width: 275px">OpenID account</h2>
+            <h2>OpenID account</h2>
 						<center>
 						<div style="width: 77%">
             <%= render :partial => "openid/new" %>
@@ -78,7 +77,6 @@
         </td>
     </tr>
 </table>
-</center>
 <h2>Email</h2>
 <p style="font-size: 85%;">
     <%= link_to_function "Why should I provide an email address?" + expand_image, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>

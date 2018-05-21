@@ -157,11 +157,11 @@ class UsersController < ApplicationController
     end
     
     unless params[:user][:name]
-      params[:user][:name] = "#{params[:user][:given_name]} #{params[:user][:family_name]}"
+      params[:user][:name] = params[:user][:username].humanize
     end
     
     # Reset certain fields (to prevent injecting the values)
-    params[:user][:email] = nil;
+    params[:user][:email] = nil
     params[:user][:email_confirmed_at] = nil
     params[:user][:activated_at] = nil
     
@@ -241,26 +241,26 @@ class UsersController < ApplicationController
           @user.unconfirmed_email = nil;
           @user.save
           
-          flash.now[:error] = 'The new email address you are trying to set is the same as your current email address'
+          flash[:error] = 'The new email address you are trying to set is the same as your current email address'
         else
           # If a new email address was set, then need to send out a confirmation email
           if params[:user][:unconfirmed_email]
             @user.send_update_email_confirmation
-            flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
-          elsif params[:update_type]
-            case params[:update_type]
-              when "upd_t_up"; flash.now[:notice] = 'You have successfully updated your password'
-              when "upd_t_name"; flash.now[:notice] = 'You have successfully updated your name'
-              when "upd_t_notify"; flash.now[:notice] = 'You have successfully updated notification options'
-            end
+            flash[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
           else
-              flash.now[:notice] = 'You have successfully updated your account' # general message to be displayed when hidden field 'update_type' was not created for a certain form on the page
+            case params[:update_type]
+              when "upd_t_up"; flash[:notice] = 'You have successfully updated your password'
+              when "upd_t_name"; flash[:notice] = 'You have successfully updated your name'
+              when "upd_t_notify"; flash[:notice] = 'You have successfully updated notification options'
+              else; flash[:notice] = 'You have successfully updated your account' # general message to be displayed when hidden field 'update_type' was not created for a certain form on the page
+            end
           end
         end
         
         #format.html { redirect_to user_url(@user) }
         format.html { redirect_to :action => "edit" }
       else
+        flash[:error] = @user.errors.full_messages.join("<br/>")
         format.html { redirect_to :action => "edit" }
       end
     end
