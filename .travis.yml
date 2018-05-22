@@ -6,8 +6,8 @@ before_install:
 - gem --version
 - sudo apt-get update
 - sudo apt-get install graphviz
-script:
 - mv config/database.yml.pre config/database.yml
 - RAILS_ENV=test bundle exec rake db:create
 - RAILS_ENV=test bundle exec rake db:migrate
+script:
 - bundle exec rake test
