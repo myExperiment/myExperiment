@@ -82,17 +82,21 @@ module ApplicationHelper
   
   def name(user_id, truncate_to=nil)
     if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
+      user = User.find(:first, :select => "id, name, hidden", :conditions => ["id = ?", user_id])
       return nil unless user
     elsif user_id.kind_of? User
       user = user_id
     else
       return nil
     end
-    
-    name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
-    
-    return link_to(h(name), user_path(user), :title => tooltip_title_attrib(h(user.name)))
+
+    if user.hidden?
+      return '<span class="none_text">Hidden user</span>'
+    else
+      name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
+
+      return link_to(h(name), user_path(user), :title => tooltip_title_attrib(h(user.name)))
+    end
   end
   
   def title(network_id, truncate_to=nil)
@@ -290,8 +294,12 @@ module ApplicationHelper
   
   def contributor(contributorid, contributortype, avatar=false, size=100, you_text=false)
     if contributortype.to_s == "User"
-      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
+      user = User.find(:first, :select => "id, name, hidden", :conditions => ["id = ?", contributorid])
       return nil unless user
+
+      if user.hidden?
+        return '<span class="none_text">Hidden user</span>'
+      end
       
       # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
       you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>" : ""
@@ -318,7 +326,7 @@ module ApplicationHelper
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
       return nil unless user
       
-      return h(user.name)
+      return user.hidden? ? 'Hidden user' : h(user.name)
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network

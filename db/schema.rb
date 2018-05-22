@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150610085354) do
+ActiveRecord::Schema.define(:version => 20180521132620) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -789,6 +789,7 @@ ActiveRecord::Schema.define(:version => 20150610085354) do
     t.integer  "spam_score"
     t.string   "given_name"
     t.string   "family_name"
+    t.boolean  "hidden",                                  :default => false
   end
 
   create_table "viewings", :force => true do |t|

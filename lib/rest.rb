@@ -455,6 +455,7 @@ def rest_crud_request(req_uri, ob_id, format, rules, user, query)
     when 'public'; # do nothing
     when 'view';  return rest_response(401, :reason => "Not authorised") if not Authorization.check("view", perm_ob, user)
     when 'owner'; return rest_response(401, :reason => "Not authorised") if logged_in?.nil? or object_owner(perm_ob) != user
+    when 'hidden-owner'; return rest_response(401, :reason => "Not authorised") if perm_ob.hidden? && (object_owner(perm_ob) != user)
   end
 
   rest_get_request(ob, user, query)
@@ -655,11 +656,12 @@ def object_owner(ob)
   return User.find(ob.to) if ob.class == Message
   return ob.user  if ob.respond_to?("user")
   return ob.owner if ob.respond_to?("owner")
+  return ob if ob.is_a?(User)
 end
 
 def model_index_conditions(model_name)
   case model_name
-    when 'user'; return 'users.activated_at IS NOT NULL'
+    when 'user'; return 'users.activated_at IS NOT NULL AND users.hidden != TRUE'
   end
 end
 

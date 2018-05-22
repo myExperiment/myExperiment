@@ -9,8 +9,8 @@
  xmlns:x2="http://schemas.microsoft.com/office/excel/2003/xml"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <LastAuthor>Finn</LastAuthor>
-  <LastSaved>2013-12-17T09:22:28Z</LastSaved>
+  <LastAuthor>Finn .</LastAuthor>
+  <LastSaved>2018-05-21T14:31:49Z</LastSaved>
   <Version>14.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -38,6 +38,7 @@
   <WindowWidth>13860</WindowWidth>
   <WindowTopX>240</WindowTopX>
   <WindowTopY>75</WindowTopY>
+  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -54,7 +55,7 @@
   </Style>
   <Style ss:ID="s63" ss:Name="Normal_">
    <Alignment ss:Vertical="Bottom"/>
-   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
   </Style>
   <Style ss:ID="s66" ss:Parent="s63">
    <Alignment ss:Vertical="Bottom" ss:WrapText="1"/>
@@ -90,22 +91,22 @@
   </Style>
   <Style ss:ID="s78" ss:Parent="s63">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
    <Interior ss:Color="#CCFFCC" ss:Pattern="Solid"/>
   </Style>
   <Style ss:ID="s79" ss:Parent="s63">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
   </Style>
   <Style ss:ID="s80" ss:Parent="s63">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
   </Style>
   <Style ss:ID="s81" ss:Parent="s63">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Font ss:FontName="Verdana" ss:Color="#000000"/>
+   <Font ss:FontName="Verdana" x:Family="Swiss" ss:Color="#000000"/>
   </Style>
   <Style ss:ID="s82" ss:Parent="s63">
-   <Font ss:FontName="Calibri" ss:Size="11"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11"/>
   </Style>
   <Style ss:ID="s83" ss:Parent="s63">
    <Interior ss:Color="#C0504D" ss:Pattern="Solid"/>
@@ -346,7 +347,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">GET</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">hidden-owner</Data></Cell>
     <Cell ss:Index="8" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12" ss:StyleID="s63"><Data ss:Type="String">crud</Data></Cell>
@@ -1908,9 +1909,8 @@
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
-   <Selected/>
    <SplitHorizontal>900</SplitHorizontal>
-   <TopRowBottomPane>184</TopRowBottomPane>
+   <TopRowBottomPane>7</TopRowBottomPane>
    <ActivePane>2</ActivePane>
    <Panes>
     <Pane>
@@ -1919,7 +1919,8 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>188</ActiveRow>
+     <ActiveRow>45</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -2154,7 +2155,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">file</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">uploader</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Blob</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -3747,7 +3748,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">workflow</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">uploader</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Workflow</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -4437,7 +4438,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">pack</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">owner</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Pack</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -4682,7 +4683,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">experiment</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">owner</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Experiment</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -4791,7 +4792,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">runner</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">owner</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">TavernaEnactor</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -6253,7 +6254,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">owner</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">visible_contributor</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -6837,9 +6838,9 @@
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
-   <LeftColumnVisible>4</LeftColumnVisible>
+   <Selected/>
    <SplitHorizontal>945</SplitHorizontal>
-   <TopRowBottomPane>132</TopRowBottomPane>
+   <TopRowBottomPane>0</TopRowBottomPane>
    <ActivePane>2</ActivePane>
    <Panes>
     <Pane>
@@ -6849,8 +6850,8 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>160</ActiveRow>
-     <ActiveCol>23</ActiveCol>
+     <ActiveRow>10</ActiveRow>
+     <ActiveCol>16</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

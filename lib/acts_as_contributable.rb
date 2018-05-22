@@ -137,6 +137,10 @@ module Mib
             end
           end
         end
+
+        def visible_contributor
+          contributor if contributor && !contributor.hidden?
+        end
       end
     end
   end

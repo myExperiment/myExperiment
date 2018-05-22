@@ -750,7 +750,7 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    @users = User.find(:all, 
+    @users = User.not_hidden.find(:all,
                        :order => "users.name ASC",
                        :conditions => "users.activated_at IS NOT NULL",
                        :include => :profile)
@@ -768,6 +768,8 @@ protected
 
     if @user.nil? || !@user.activated?
       render_404("User not found, or not activated.")
+    elsif @user.hidden? && @user != current_user
+      render_401("User is hidden.")
     end
   end
 

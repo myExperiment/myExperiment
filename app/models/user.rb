@@ -30,6 +30,8 @@ class User < ActiveRecord::Base
 
   named_scope :users_to_check, :conditions => "activated_at IS NOT NULL AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'suspect' AND account_status != 'whitelist'))"
 
+  named_scope :not_hidden, :conditions => "hidden != TRUE"
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",
@@ -660,6 +662,10 @@ class User < ActiveRecord::Base
 
   def uri
     "#{Conf.base_uri}/users/#{id}"
+  end
+
+  def label
+    hidden? ? 'Hidden user' : name
   end
 
 protected
