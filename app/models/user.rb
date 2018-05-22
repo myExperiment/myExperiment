@@ -668,6 +668,10 @@ class User < ActiveRecord::Base
     hidden? ? 'Hidden user' : name
   end
 
+  def unless_hidden
+    hidden? ? nil : self
+  end
+
 protected
 
   # clean up emails and username before validation

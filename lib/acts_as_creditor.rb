@@ -27,6 +27,11 @@ module Dgc
       end
 
       module InstanceMethods
+        unless method_defined?(:hidden?)
+          def hidden?
+            false
+          end
+        end
       end
     end
   end
