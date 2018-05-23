@@ -11,6 +11,8 @@ require 'acts_as_creditor'
 require 'sunspot_rails'
 
 class User < ActiveRecord::Base
+
+  HIDDEN_LABEL = 'Hidden user'
   
   has_many :citations, 
            :order => "created_at DESC",
@@ -665,7 +667,7 @@ class User < ActiveRecord::Base
   end
 
   def label
-    hidden? ? 'Hidden user' : name
+    hidden? ? User::HIDDEN_LABEL : name
   end
 
   def unless_hidden

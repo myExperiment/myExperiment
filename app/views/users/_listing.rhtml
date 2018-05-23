@@ -1,4 +1,5 @@
 <% user = listing %>
+<% unless user.hidden? %>
 
 <div class="resource_list_item">
 
@@ -93,3 +94,4 @@
     <% end %>
   </div>
 </div>
+<% end %>

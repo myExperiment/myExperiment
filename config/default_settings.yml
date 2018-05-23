@@ -541,7 +541,7 @@ pivot_options:
     credits: INNER JOIN creditations ON creditations.creditable_type = RESULT_TYPE AND creditations.creditable_id = RESULT_ID
     networks: INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id
     topic_workflow_map: INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id
-    users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id
+    users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id AND users.hidden != TRUE
     licences: LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
 
   order:

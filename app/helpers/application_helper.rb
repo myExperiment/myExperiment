@@ -91,7 +91,7 @@ module ApplicationHelper
     end
 
     if user.hidden?
-      return '<span class="none_text">Hidden user</span>'
+      return "<span class=\"none_text\">#{User::HIDDEN_LABEL}</span>"
     else
       name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
 
@@ -115,12 +115,16 @@ module ApplicationHelper
   
   def avatar(user_id, size=200, url=nil, annotation = nil, image_options = {})
     if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
+      user = User.find(:first, :select => "id, name, hidden", :conditions => ["id = ?", user_id])
       return nil unless user
     elsif user_id.kind_of? User
       user = user_id
     else
       return nil
+    end
+
+    if user.hidden?
+      return "<span class=\"none_text\">#{User::HIDDEN_LABEL}</span>"
     end
     
     img = image_tag user.avatar? ? avatar_url(user.profile.picture_id, size) : "avatar.png",
@@ -298,7 +302,7 @@ module ApplicationHelper
       return nil unless user
 
       if user.hidden?
-        return '<span class="none_text">Hidden user</span>'
+        return "<span class=\"none_text\">#{User::HIDDEN_LABEL}</span>"
       end
       
       # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
@@ -323,10 +327,10 @@ module ApplicationHelper
   
   def contributor_name(contributorid, contributortype)
     if contributortype.to_s == "User"
-      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
+      user = User.find(:first, :select => "id, name, hidden", :conditions => ["id = ?", contributorid])
       return nil unless user
       
-      return user.hidden? ? 'Hidden user' : h(user.name)
+      return user.hidden? ? User::HIDDEN_LABEL : h(user.name)
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network

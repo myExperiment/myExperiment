@@ -23,6 +23,10 @@ module ActivitiesHelper
     end
 
     thing = thing.versioned_resource if thing.respond_to?(:versioned_resource)
+    if thing.is_a?(User) && thing.hidden?
+      thing = nil
+      label = User::HIDDEN_LABEL
+    end
 
     if thing
       path = case thing.class.name
@@ -116,6 +120,11 @@ module ActivitiesHelper
       break if incoming.length == 0
 
       incoming.each do |activity|
+        # Remove activities about hidden users
+        if activity.subject.is_a?(User) && activity.subject.hidden? ||
+            activity.objekt.is_a?(User) && activity.objekt.hidden?
+          next
+        end
 
         # Special case for group announcements as they can be made private.
 

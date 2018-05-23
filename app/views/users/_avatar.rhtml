@@ -2,23 +2,24 @@
 <% you_string ||= "" -%>
 <% if user.kind_of? Fixnum then user = User.find(user) end -%>
 <div class="avatar" style="width: <%= size+6 %>px">
-	<%= avatar(user, size) %>
+  <%= avatar(user, size) %>
+  <% unless user.hidden? %>
 	<span style="display:block;margin-top:2px;text-align:center;">
 		<% if size > 59 %>
 			<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
 		<% end %>
-		
-		<% if not user.name =~ /[ ]/ %>
+
+    <% if not user.name =~ /[ ]/ %>
 		  <%= name user, size/6 %>
 		<% elsif user.name.length > 30 %>
 			<%= name user, 30 %>
 		<% else %>
 			<%= name user %>
 		<% end %>
-		
-		<% unless you_string.blank? %>
+
+    <% unless you_string.blank? %>
 		  <%= you_string -%>
 		<% end %>
-		
 	</span>
+  <% end %>
 </div>
