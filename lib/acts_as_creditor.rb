@@ -27,10 +27,8 @@ module Dgc
       end
 
       module InstanceMethods
-        unless method_defined?(:hidden?)
-          def hidden?
-            false
-          end
+        def hidden?
+          respond_to?(:hidden) ? hidden : false
         end
       end
     end
