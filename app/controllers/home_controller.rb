@@ -17,5 +17,10 @@ class HomeController < ApplicationController
       format.html { redirect_to home_path }
     end
   end
-  
+
+  def privacy
+    respond_to do |format|
+      format.html
+    end
+  end
 end

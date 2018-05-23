@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "home", :action => "front_page"
 
   map.home '/home', :controller => 'home', :action => 'index'
+  map.privacy '/privacy', :controller => 'home', :action => 'privacy'
 
   map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
   map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
