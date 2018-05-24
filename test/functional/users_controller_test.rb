@@ -21,12 +21,19 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   def test_should_create_user
-    old_count = User.count
+    assert_difference('User.count', 1) do
+      post :create, :terms_consent => '1', :user => { :name => "John Doe", :unconfirmed_email => 'test@example.com', :username => 'new_user', :password => 'secret', :password_confirmation => 'secret' }
+    end
 
-    post :create, :user => { :name => "John Doe", :unconfirmed_email => 'test@example.com', :username => 'new_user', :password => 'secret', :password_confirmation => 'secret' }
-
-    assert_equal old_count+1, User.count    
     assert_redirected_to :action => :index
+  end
+
+  def test_should_not_create_user_without_consent
+    assert_no_difference('User.count') do
+      post :create, :user => { :name => "John Doe", :unconfirmed_email => 'test@example.com', :username => 'new_user', :password => 'secret', :password_confirmation => 'secret' }
+    end
+
+    assert assigns(:user).errors[:base]
   end
 
   def test_should_show_user
