@@ -168,60 +168,65 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     respond_to do |format|
+      if params[:terms_consent].to_s != '1'
+        @user.errors.clear
+        @user.errors.add_to_base("You must agree to the Terms of Use to use #{Conf.sitename}.")
+        format.html { render :action => "new" }
+      else
+        sent_email = false
+        spammer = false
 
-      sent_email = false
-      spammer = false
+        if @user.valid?
 
-      if @user.valid?
+          # basic spam check
 
-        # basic spam check
+          unless RAILS_ENV == 'test'
+            url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
 
-        unless RAILS_ENV == 'test'
-          url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
+            sfs_response = ActiveSupport::JSON.decode(open(url).read)
 
-          sfs_response = ActiveSupport::JSON.decode(open(url).read)
-
-          if (sfs_response["success"] == 1)
-            if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
-              spammer = true
+            if (sfs_response["success"] == 1)
+              if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
+                spammer = true
+              end
             end
+          end
+
+          begin
+              # DO NOT log in user yet, since account needs to be validated and activated first (through email).
+              if !spammer
+                @user.send_email_confirmation_email
+                sent_email = true
+              end
+          rescue
+            @user.errors.add_to_base("Unable to send confirmation email")
           end
         end
 
-        begin
-            # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-            if !spammer
-              @user.send_email_confirmation_email
-              sent_email = true
-            end
-        rescue
-          @user.errors.add_to_base("Unable to send confirmation email")
-        end
-      end
+        if sent_email && !spammer && @user.save
 
-      if sent_email && !spammer && @user.save
-        
-        # If required, copy the email address to the Profile
-        if params[:make_email_public]
-          @user.profile.email = @user.unconfirmed_email
-          @user.profile.save
+          # If required, copy the email address to the Profile
+          if params[:make_email_public]
+            @user.profile.email = @user.unconfirmed_email
+            @user.profile.save
+          end
+
+          # if the user has registered with an email address different than that which was used
+          # for invitation, need to update all entries in PendingInvitations table, so that the
+          # requests would reach the new user even with an updated email:
+          unless params[:invitation_token].blank?
+            invitations = PendingInvitation.find(:all, :conditions => ["token = ?", params[:invitation_token]])
+            invitations.each { |pi|
+              pi.email = @user.unconfirmed_email
+              pi.save
+            }
+          end
+
+          flash[:notice] = "Thank you for registering! An email has been sent to #{@user.unconfirmed_email} with instructions on how to activate your account."
+          format.html { redirect_to(:action => "index") }
+        else
+          format.html { render :action => "new" }
         end
-        
-        # if the user has registered with an email address different than that which was used
-        # for invitation, need to update all entries in PendingInvitations table, so that the
-        # requests would reach the new user even with an updated email:
-        unless params[:invitation_token].blank?
-          invitations = PendingInvitation.find(:all, :conditions => ["token = ?", params[:invitation_token]]) 
-          invitations.each { |pi|
-            pi.email = @user.unconfirmed_email
-            pi.save
-          }
-        end
-        
-        flash[:notice] = "Thank you for registering! An email has been sent to #{@user.unconfirmed_email} with instructions on how to activate your account."
-        format.html { redirect_to(:action => "index") }
-      else
-        format.html { render :action => "new" }
       end
     end
   end

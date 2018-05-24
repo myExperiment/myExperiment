@@ -4,27 +4,34 @@
 
 <%= error_messages_for :user %>
 
-<div class="box_infotext">
-	<strong>By registering, you are indicating that you have read and agree that:</strong> 
-	You are responsible for any content that you upload. You may remove your content at any time. 
-	We may make copies for operational purposes. This service is governed by the 
-	<%= link_to "JANET Acceptable Use Policy", "https://community.jisc.ac.uk/library/acceptable-use-policy", :popup => true -%>.
-	Takedown requests will be reviewed by the <%= Conf.sitename %> Management Committee. 
-	We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within <%= Conf.sitename %>. 
-	We receive and store certain types of information whenever you interact with us which we will 
-	use only for operational purposes and to support academic research into the use of <%= Conf.sitename %>. 
-	We will not make personally identifiable data available to third parties without consent. 
-	Please contact us if you have any queries about our terms or our privacy policy.
-	<br/><br/>
-	<strong>Please note: all user profiles are public on <%= Conf.sitename %></strong> and 
-	therefore can be viewed by anyone and be indexed by search engines such as Google.
-	However, usernames and registered email addresses (different to profile email addresses) are not exposed.
-</div> 
-
-<br />
-<br />
-
 <% form_for(:user, :url => users_path) do |f| %>
+
+  <div class="box_infotext">
+    <h3>Terms of Use</h3>
+    You are responsible for any content that you upload. You may remove your content at any time.
+    We may make copies for operational purposes. This service is governed by the
+    <%= link_to "JANET Acceptable Use Policy", "https://community.jisc.ac.uk/library/acceptable-use-policy", :popup => true -%>.
+    Takedown requests will be reviewed by the <%= Conf.sitename %> Management Committee.
+    We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within <%= Conf.sitename %>.
+    We receive and store certain types of information whenever you interact with us which we will
+    use only for operational purposes.
+    We will not make personally identifiable data available to third parties without consent.
+    See our full <%= link_to 'privacy policy', privacy_path, :target => :blank -%>.
+    <br/><br/>
+    <strong>Please note: all user profiles are public on <%= Conf.sitename %></strong> and
+    therefore can be viewed by anyone and be indexed by search engines such as Google.
+    However, usernames and registered email addresses (different to profile email addresses) are not exposed.
+
+    <br/><br/>
+
+    <label>
+      <%= check_box_tag('terms_consent') %>
+      I understand and agree to the Terms of Use above.
+    </label>
+  </div>
+
+  <br />
+  <br />
 
   <% if Conf.recaptcha_enable -%>
     <center>
