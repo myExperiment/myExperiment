@@ -1,30 +1,32 @@
 <h1>Privacy Policy</h1>
 
 <h3>Information Submitted</h3>
-
 <h4>Registration</h4>
 <p>
   When you register with <%= Conf.sitename -%> we ask for a display name and either:
-  a username, password and email address OR an openID.
+  a username, password and email address OR an OpenID.
 </p>
 <ul>
   <li>
-    Your display name is publicly visible.
-    It is shown to other users in various places on the site, for example when they view your profile, or a resource you have created. It can be amended at any time.
+    Your <strong>display name</strong> is a publicly visible name used for attribution.
+    It is shown to other users in various places on the site, for example when they view your profile or a resource you have created. It can be amended at any time.
   </li>
   <li>
-    Your username is used for authentication and attribution.
-    It is not generally visible, although will be used if you do not provide a display name when registering. It can be amended at any time.
+    Your <strong>username</strong> is used for authentication.
+    It is not generally visible, although will be used as your display name if you do not provide one when registering. It can be amended at any time.
   </li>
   <li>
-    Your password is stored as a cryptographically-secure hash and is not publicly visible. It can be amended at any time.
+    Your <strong>password</strong> is stored as a cryptographically-secure hash and is not publicly visible. It can be changed at any time.
   </li>
   <li>
-    Your email address is used to confirm your identity and for use when requesting your password to be reset.
+    Your <strong>email address</strong> is used to confirm your identity and for use when requesting your password to be reset.
     This email address is not publicly visible, but you may specify an additional public email address (see below). It can be amended at any time.
   </li>
+  <li>
+    Your <strong>OpenID</strong> is used to authenticate you via a 3rd party service.
+    It is not generally visible, although will be used as your display name if you do not provide one when registering.
+  </li>
 </ul>
-
 <h4>Additional Personal Information</h4>
 <p>
   You may optionally provide a public profile, containing an avatar, a public email address, website link, location information (city and country), occupational information (field, role, employer, professional interests) and a biography.
@@ -36,36 +38,32 @@
   Any <em>contributions</em> (Workflows, Files, Packs) uploaded to <%= Conf.sitename -%> can be given a sharing policy to determine who can view, download and edit them. This policy can be changed at any time.
   You may also specify a license for the content (default: <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC BY-SA 3.0</a>). You may delete your contributions at any time. 
 </p>
-
 <h4>Social Content</h4>
 <p>
   <em>Social activity</em> such as creating and joining groups, adding friends, adding favourites, tagging and making comments on <%= Conf.sitename -%> is publicly visible and may show up in various news feeds across the site.
 </p>
 
 <h3>Information Automatically Collected</h3>
-
 <h4>Server Logs</h4>
 <p>
   When you browse <%= Conf.sitename -%>, the server automatically records logs of which pages you access, when you accessed them, and your IP address.
   These logs are used to diagnose and fix errors in the web application and are not shared with any third parties.
-  Sensitive information (such as passwords) is automatically stripped out.
+  Sensitive information (such as passwords) is automatically stripped out. Logs are deleted after 52 days.
 </p>
-
 <h4>Analytics</h4>
 <p>
   <%= Conf.sitename -%> uses Google Analytics to track how users are discovering <%= Conf.sitename -%> and interacting with the service.
-  The information gathered includes which pages you visited, which search terms lead you to <%= Conf.sitename -%> and information about your
-  web browser. Your IP address is anonymized, and no personally identifiable information is sent to Google.
+  The information gathered includes which pages are visited, which search terms lead visitors to <%= Conf.sitename -%>, and information about the web browser is used.
+  No personally identifiable information is sent to Google, and your IP address is anonymized. Analytics data is deleted after 50 months.
 </p>
 
 <h3>Information Retention</h3>
 <p>
   Your information will be retained by <%= Conf.sitename -%> until you choose to remove it, your account is deleted, or the <%= Conf.sitename -%> service ceases to exist.
-  You may request removal of your account by <%= link_to "contacting us", :controller => "feedback", :action => "index", :subject => "Unregister from #{Conf.sitename}" -%>.
+  You may request the removal of your account by <%= link_to "contacting us", :controller => "feedback", :action => "index", :subject => "Unregister from #{Conf.sitename}" -%>.
 </p>
 
 <h3>Code of Conduct</h3>
-
 <p>
   <%= Conf.sitename -%> adheres to the
   <a href="https://wiki.refeds.org/display/CODE/Code+of+Conduct+for+Service+Providers">
