@@ -99,7 +99,7 @@
 <% if @content_for_footer %>
     <%= yield :footer %>
 <% else %>
-    <% cache(:controller => 'global_cache', :action => 'footer') do -%>
+    <% cache("footer_#{admin? ? 'admin' : 'user'}") do -%>
         <div id="ft">
           <%= render :partial => "layouts/footer" %>
         </div>
