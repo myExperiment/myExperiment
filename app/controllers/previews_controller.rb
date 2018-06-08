@@ -3,7 +3,7 @@
 # Copyright (c) 2011 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'RMagick'
+require 'rmagick'
 
 class PreviewsController < ApplicationController
 
