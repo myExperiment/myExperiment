@@ -58,6 +58,8 @@ Rails::Initializer.run do |config|
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
+  Encoding.default_internal = Encoding::UTF_8
+  Encoding.default_external = Encoding::UTF_8
 end
 
 # Add new mime types for use in respond_to blocks:
