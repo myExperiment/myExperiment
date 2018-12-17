@@ -473,13 +473,17 @@ class ApplicationController < ActionController::Base
   end
 
   def send_cached_data(file_name, *opts)
+    begin
+      if !File.exists?(file_name)
+        FileUtils.mkdir_p(File.dirname(file_name))
+        File.open(file_name, "wb+") { |f| f.write(yield) }
+      end
 
-    if !File.exists?(file_name)
-      FileUtils.mkdir_p(File.dirname(file_name))
-      File.open(file_name, "wb+") { |f| f.write(yield) }
+      send_file(file_name, *opts)
+    rescue StandardError
+      FileUtils.rm(file_name)
+      raise
     end
-
-    send_file(file_name, *opts)
   end
 
   #Applies the layout for the Network with the given network_id to the object (contributable)
