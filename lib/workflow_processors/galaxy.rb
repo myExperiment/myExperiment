@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'libxml'
+require 'json'
 
 module WorkflowProcessors
 
@@ -46,8 +47,8 @@ module WorkflowProcessors
     end
     
     def self.recognised?(file)
-      rec = file.readline.strip == '{' &&
-            file.readline.strip == '"a_galaxy_workflow": "true",'
+      h = JSON.parse(file.read)
+      rec = h['a_galaxy_workflow'] == 'true'
       file.rewind
       rec
     end
