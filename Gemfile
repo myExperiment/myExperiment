@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem "rails", "2.3.18"
 gem "mysql2", "~> 0.2.24"
-gem "rubyzip", "~> 0.9.4"
+gem "rubyzip", "~> 1.3.0"
 gem "oauth", "~> 0.4.3"
 gem "libxml-ruby", '~> 2.7.0', :require=>"libxml"
 gem "rmagick", "~> 2.16.0", :require => 'rmagick'
