@@ -118,7 +118,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.1)
     wf4ever-transformation-client (0.3.1)
-    will_paginate (2.3.16)
+    will_paginate (3.0.5)
 
 PLATFORMS
   ruby
@@ -156,7 +156,7 @@ DEPENDENCIES
   taverna-scufl (~> 0.7.2)
   taverna-t2flow (~> 0.5.0)
   wf4ever-transformation-client (~> 0.3.0)
-  will_paginate (~> 2.3.16)
+  will_paginate (~> 3.0.5)
 
 BUNDLED WITH
    1.15.4
