@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "rails", "2.3.18"
+gem "rails", "7.0.3"
 gem "mysql2", "~> 0.2.24"
 gem "rubyzip", "~> 0.9.4"
 gem "oauth", "~> 0.4.3"
@@ -29,7 +29,7 @@ gem "will_paginate", "~> 2.3.16"
 gem "open_id_authentication", "~> 1.1.0"
 gem "simple-rss", "~> 1.2.3"
 gem "net-http-persistent", "~> 2.8"
-gem "delayed_job", "~>2.0.4"
+gem "delayed_job", "~>4.1.10"
 gem "wf4ever-transformation-client", "~> 0.3.0"
 gem "sanitize", "~> 2.0.6"
 gem 'datacite_doi_ify'
