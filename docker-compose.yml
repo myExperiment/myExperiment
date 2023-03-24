@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.7
+    container_name: myexperiment-mysql
+    command:
+      --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    restart: always
+    stop_grace_period: 1m30s
+    env_file: .env
+    volumes:
+      - db-data:/var/lib/mysql
+  app:
+    container_name: myexperiment-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myexperiment-app
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - db
+      - solr
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/code
+      - gem_cache:/usr/local/bundle/gems
+      - node_modules:/app/node_modules
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: 'true'
+      RAILS_SERVE_STATIC_FILES: 'true'
+  solr:
+    container_name: myexperiment-solr
+    image: solr:8
+    restart: always
+    volumes:
+      - solr-data:/var/solr
+      - ./solr:/opt/solr/server/solr/configsets/production
+    command:
+      - solr-precreate
+      - myexperiment
+      - /opt/solr/server/solr/configsets/production
+volumes:
+  db-data:
+  solr-data:
+  gem_cache:
+  node_modules:
