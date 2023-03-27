@@ -26,7 +26,6 @@ services:
     volumes:
       - .:/code
       - gem_cache:/usr/local/bundle/gems
-      - node_modules:/app/node_modules
     environment:
       RAILS_ENV: production
       RAILS_LOG_TO_STDOUT: 'true'
@@ -42,8 +41,18 @@ services:
       - solr-precreate
       - myexperiment
       - /opt/solr/server/solr/configsets/production
+  triplestore:
+    container_name: myexperiment-triplestore
+    image: eclipse/rdf4j-workbench:3.7.7
+    restart: always
+    ports:
+      - '8080:8080'
+    volumes:
+      - triplestore-data:/var/rdf4j
+      - triplestore-logs:/usr/local/tomcat/logs
 volumes:
   db-data:
   solr-data:
+  triplestore-data:
+  triplestore-logs:
   gem_cache:
-  node_modules:

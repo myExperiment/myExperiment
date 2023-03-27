@@ -86,6 +86,40 @@ module Sesame
       end
     end
 
+    def create_repository(id, name)
+      url = URI(@url)
+      request = Net::HTTP::Put.new url.request_uri
+      request.body = %(@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+
+[] a rep:Repository ;
+   rep:repositoryID "#{id}" ;
+   rdfs:label "#{name}" ;
+   rep:repositoryImpl [
+      rep:repositoryType "openrdf:SailRepository" ;
+      sr:sailImpl [
+	 sail:sailType "openrdf:NativeStore"
+      ]
+   ].
+)
+      request.content_type = 'application/x-turtle'
+
+      begin
+        response = @connection.request url, request   #Net::HTTP::Persistent::Error if can't connect
+      rescue Net::HTTP::Persistent::Error
+        raise ConnectionException.new, "Couldn't connect to #@url"
+      end
+
+      case response.code
+      when '204'
+        true
+      else
+        raise RequestException.new(response.code, response.body)
+      end
+    end
+
   end
 
   class ConnectionException < Exception;  end
