@@ -1,8 +1,8 @@
 #!/bin/bash
 
 cp docker/database.yml config/database.yml
-cp docker/sunspot.yml config/sunspot.yml
 
+mkdir -p log
 touch log/production.log
 tail -f log/production.log &
 

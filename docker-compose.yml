@@ -24,8 +24,8 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - .:/code
-      - gem_cache:/usr/local/bundle/gems
+      - ./config/settings.yml:/code/config/settings.yml
+      - app-cache:/code/tmp
     environment:
       RAILS_ENV: production
       RAILS_LOG_TO_STDOUT: 'true'
@@ -45,12 +45,11 @@ services:
     container_name: myexperiment-triplestore
     image: eclipse/rdf4j-workbench:3.7.7
     restart: always
-    ports:
-      - '8080:8080'
     volumes:
       - triplestore-data:/var/rdf4j
       - triplestore-logs:/usr/local/tomcat/logs
 volumes:
+  app-cache:
   db-data:
   solr-data:
   triplestore-data:

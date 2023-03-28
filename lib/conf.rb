@@ -208,11 +208,11 @@ class Conf
   end
 
   def self.enable_triple_store
-    self.fetch_entry('enable_triple_store')
+    self.fetch_entry('enable_triple_store') || !ENV['TRIPLESTORE_URL'].blank?
   end
 
   def self.sesame_repository
-    self.fetch_entry('sesame_repository')
+    self.fetch_entry('sesame_repository') || ENV['TRIPLESTORE_URL']
   end
 
   def self.initial_filter_size

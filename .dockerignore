@@ -1,0 +1,8 @@
+.git/
+Dockerfile
+filestore*
+log/
+tmp/
+config/sunspot.yml
+config/database.yml
+config/settings.yml
