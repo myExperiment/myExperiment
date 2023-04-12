@@ -27,7 +27,7 @@ USER myexperiment
 COPY Gemfile Gemfile.lock ./
 RUN /bin/bash -l -c "gem install bundler --version 1.15.4"
 RUN /bin/bash -l -c "rvm use ruby-1.9.2-p320"
-RUN /bin/bash -l -c "NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install"
+RUN /bin/bash -l -c "NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install --deployment"
 
 # Code
 COPY . .
