@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT}
     image: myexperiment-app
     restart: unless-stopped
     env_file: .env

@@ -35,6 +35,10 @@ COPY . .
 USER root
 RUN chown -R myexperiment:myexperiment /code
 
+# Commit info
+ARG GIT_COMMIT
+ENV GIT_COMMIT=$GIT_COMMIT
+
 # Expose port
 EXPOSE 3000
 

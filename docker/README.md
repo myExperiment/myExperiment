@@ -4,7 +4,7 @@ To run:
 
 or to rebuild:
 
-    docker-compose up --build
+    GIT_COMMIT=`git rev-parse HEAD`; docker-compose up --build
 
 To run commands/tasks:
 
