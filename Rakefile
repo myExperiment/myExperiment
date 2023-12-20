@@ -429,3 +429,24 @@ task "myexp:ro:addmissing" do
   end
 end
 
+desc 'Create the repository to hold RDF triples'
+task "myexp:triplestore:create" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  TripleStore.instance.create_repository('myexperiment', 'myexperiment')
+
+  puts 'Done'
+end
+
+desc 'Populate the triplestore with RDF for current workflows'
+task "myexp:triplestore:populate" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  Workflow.all.each do |workflow|
+    workflow.send(:generate_rdf)
+    workflow.send(:store_rdf)
+    print '.'
+  end
+
+  puts "\nDone"
+end

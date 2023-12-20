@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.7
+    container_name: myexperiment-mysql
+    command:
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+      - --max_allowed_packet=1073741824
+    restart: always
+    stop_grace_period: 1m30s
+    env_file: .env
+    volumes:
+      - db-data:/var/lib/mysql
+  app:
+    container_name: myexperiment-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT}
+    image: myexperiment-app
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - db
+      - solr
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./config/settings.yml:/code/config/settings.yml
+      - app-cache:/code/tmp
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: 'true'
+      RAILS_SERVE_STATIC_FILES: 'true'
+  solr:
+    container_name: myexperiment-solr
+    image: solr:8
+    restart: always
+    volumes:
+      - solr-data:/var/solr
+      - ./solr:/opt/solr/server/solr/configsets/production
+    command:
+      - solr-precreate
+      - myexperiment
+      - /opt/solr/server/solr/configsets/production
+  triplestore:
+    container_name: myexperiment-triplestore
+    image: eclipse/rdf4j-workbench:3.7.7
+    restart: always
+    volumes:
+      - triplestore-data:/var/rdf4j
+      - triplestore-logs:/usr/local/tomcat/logs
+volumes:
+  app-cache:
+  db-data:
+  solr-data:
+  triplestore-data:
+  triplestore-logs:
+  gem_cache:

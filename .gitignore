@@ -10,3 +10,4 @@
 /solr/data
 sunspot-solr.pid
 *.orig
+.env
