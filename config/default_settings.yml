@@ -685,3 +685,6 @@ doi_prefix: # 10.5072/myexp-test.    remember to include separator
 # Systo integration
 enable_systo_execution: false
 systo_execution_url: http://flask.systo.org/modelhub.html
+
+registration_disabled: false
+user_index_disabled: false

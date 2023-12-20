@@ -16,6 +16,8 @@ class UsersController < ApplicationController
   before_filter :find_users, :only => [:all]
   before_filter :find_user, :only => [:destroy, :edit, :update] + show_actions
   before_filter :auth_user, :only => [:edit, :update]
+  before_filter :check_registration_disabled, :only => [:new]
+  before_filter :check_user_index_disabled, :only => [:index]
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
@@ -781,6 +783,20 @@ protected
   def auth_user
     unless @user == current_user
       render_401("You may only manage your own account.")
+    end
+  end
+
+  def check_registration_disabled
+    if Conf.registration_disabled
+      flash[:error] = "Registration is disabled"
+      redirect_to home_path
+    end
+  end
+
+  def check_user_index_disabled
+    if Conf.user_index_disabled
+      flash[:error] ||= "User directory is not available"
+      redirect_to home_path
     end
   end
 end

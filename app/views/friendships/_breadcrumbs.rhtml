@@ -1,5 +1,9 @@
 <% if @user %>
-  <li><%= link_to 'Users', users_path %></li>
+  <% if Conf.user_index_disabled %>
+    <li>Users</li>
+  <% else  %>
+    <li><%= link_to 'Users', users_path %></li>
+  <% end %>
 
   <li><%= name(@user) %></li>
 

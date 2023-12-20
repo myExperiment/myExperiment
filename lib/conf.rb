@@ -323,6 +323,14 @@ class Conf
     self.fetch_entry('shortcut_keywords') || {}
   end
 
+  def self.registration_disabled
+    self.fetch_entry('registration_disabled')
+  end
+
+  def self.user_index_disabled
+    self.fetch_entry('user_index_disabled')
+  end
+
 private
 
   def self.model_alias_convert(map, str)

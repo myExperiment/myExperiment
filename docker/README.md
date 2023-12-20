@@ -1,3 +1,7 @@
+First create your .env file:
+
+    cp sample.env .env
+
 To run:
 
     docker-compose up

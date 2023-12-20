@@ -1,7 +1,11 @@
 <% if controller.action_name == 'index' %>
   <li>Users</li>
 <% else %>
-  <li><%= link_to 'Users', users_path %></li>
+  <% if Conf.user_index_disabled %>
+    <li>Users</li>
+  <% else  %>
+    <li><%= link_to 'Users', users_path %></li>
+  <% end %>
 <% end %>
 
 <% if ["edit"].include? controller.action_name.to_s -%>
