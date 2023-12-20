@@ -4,17 +4,11 @@
 # See license.txt for details.
 
 class HomeController < ApplicationController
-  
+
   # GET /home
   def index
     respond_to do |format|
       format.html # index.rhtml
-    end
-  end
-
-  def front_page
-    respond_to do |format|
-      format.html { redirect_to home_path }
     end
   end
 

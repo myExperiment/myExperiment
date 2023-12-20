@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
   # rest routes
   rest_routes(map)
 
-  map.root :controller => "home", :action => "front_page"
+  map.root :controller => "home", :action => "index"
 
   map.home '/home', :controller => 'home', :action => 'index'
   map.privacy '/privacy', :controller => 'home', :action => 'privacy'
@@ -15,18 +15,18 @@ ActionController::Routing::Routes.draw do |map|
 
   # Runners
   map.resources :runners, :member => { :verify => :get }
-  
+
   # Experiments
   map.resources :experiments do |e|
     # Experiments have nested Jobs
-    e.resources :jobs, 
-      :member => { :save_inputs => :post, 
-                   :submit_job => :post, 
-                   :refresh_status => :get, 
-                   :refresh_outputs => :get, 
-                   :outputs_xml => :get, 
-                   :outputs_package => :get, 
-                   :rerun => :post, 
+    e.resources :jobs,
+      :member => { :save_inputs => :post,
+                   :submit_job => :post,
+                   :refresh_status => :get,
+                   :refresh_outputs => :get,
+                   :outputs_xml => :get,
+                   :outputs_package => :get,
+                   :rerun => :post,
                    :render_output => :get }
   end
 
@@ -38,7 +38,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # mashup
   map.resource :mashup, :controller => 'mashup'
-  
+
   # search
   map.resource :search,
     :controller => 'search',
@@ -49,19 +49,19 @@ ActionController::Routing::Routes.draw do |map|
 
   # sessions and RESTful authentication
   map.resource :session, :collection => { :create => :post }
-  
+
   # openid authentication
   map.resource :openid, :controller => 'openid'
-  
+
   # packs
-  map.resources :packs, 
-    :collection => { :search => :get }, 
+  map.resources :packs,
+    :collection => { :search => :get },
     :member => { :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
                  :tag => :post,
                  :new_item => :get,
-                 :create_item => :post, 
+                 :create_item => :post,
                  :edit_item => :get,
                  :update_item => :put,
                  :destroy_item => :delete,
@@ -73,20 +73,20 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
   end
-    
+
   # workflows (downloadable)
-  map.resources :workflows, 
-    :collection => { :search => :get }, 
-    :member => { :new_version => :get, 
-                 :download => :get, 
+  map.resources :workflows,
+    :collection => { :search => :get },
+    :member => { :new_version => :get,
+                 :download => :get,
                  :statistics => :get,
-                 :favourite => :post, 
-                 :favourite_delete => :delete, 
-                 :rate => :post, 
-                 :tag => :post, 
-                 :create_version => :post, 
+                 :favourite => :post,
+                 :favourite_delete => :delete,
+                 :rate => :post,
+                 :tag => :post,
+                 :create_version => :post,
                  :edit_version => :get,
-                 :update_version => :put, 
+                 :update_version => :put,
                  :process_tag_suggestions => :post,
                  :tag_suggestions => :get,
                  :component_validity => :get
@@ -135,16 +135,16 @@ ActionController::Routing::Routes.draw do |map|
   # files (downloadable)
   map.resources :blobs,
     :as => :files,
-    :collection => { :search => :get }, 
+    :collection => { :search => :get },
     :member => { :download => :get,
                  :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
-                 :rate => :post, 
+                 :rate => :post,
                  :suggestions => :get,
                  :process_suggestions => :post,
                  :tag => :post } do |blob|
-    # Due to restrictions in the version of Rails used (v1.2.3), 
+    # Due to restrictions in the version of Rails used (v1.2.3),
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
     #blob.resources :reviews
@@ -170,21 +170,21 @@ ActionController::Routing::Routes.draw do |map|
 
   # For email confirmations (user accounts)
   map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
-  
+
   # For password resetting (user accounts)
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
-  
+
   [ 'news', 'friends', 'groups', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
-  
+
   # all users
-  map.resources :users, 
-    :collection => { :all => :get, 
+  map.resources :users,
+    :collection => { :all => :get,
                      :check => :get,
                      :change_status => :post,
-                     :search => :get, 
+                     :search => :get,
                      :invite => :get } do |user|
 
     # friendships 'owned by' user (user --> friendship --> friend)
@@ -198,7 +198,7 @@ ActionController::Routing::Routes.draw do |map|
 
     # pictures 'owned by' user
     user.resources :pictures, :member => { :select => :get }
-    
+
     # user's history
     user.resource :userhistory, :controller => :userhistory
 
@@ -213,13 +213,13 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :networks,
     :as => :groups,
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :all => :get, :search => :get },
     :member => { :content => :get,
                  :invite => :get,
                  :membership_invite => :post,
                  :membership_invite_external => :post,
-                 :membership_request => :get, 
-                 :rate => :post, 
+                 :membership_request => :get,
+                 :rate => :post,
                  :sync_feed => :post,
                  :subscription => [:put, :delete],
                  :tag => :post,
@@ -236,7 +236,7 @@ ActionController::Routing::Routes.draw do |map|
     network.resources :blobs, :only => :index, :as => :files
     network.resources :packs, :only => :index
   end
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
@@ -257,7 +257,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # alternate download link to work around lack of browser redirects when downloading
   map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
-  
+
   map.connect 'files/:id/download/:name', :controller => 'blobs', :action => 'named_download', :requirements => { :name => /.*/ }
   map.connect 'files/:id/versions/:version/download/:name', :controller => 'blobs', :action => 'named_download_with_version', :requirements => { :name => /.*/ }
 
