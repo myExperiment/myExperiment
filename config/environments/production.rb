@@ -16,6 +16,9 @@ config.action_view.cache_template_loading            = true
 
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new
+if ENV["RAILS_LOG_TO_STDOUT"].present?
+  config.logger = ActiveSupport::BufferedLogger.new(STDOUT)
+end
 
 # Use a different cache store in production
 # config.cache_store = :mem_cache_store
