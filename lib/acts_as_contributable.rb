@@ -137,6 +137,31 @@ module Mib
             end
           end
         end
+
+        def named_download_url(version = current_version)
+          "/#{self.class.name.underscore.pluralize}/#{id}/versions/#{version}/download/#{filename(version)}"
+        end
+
+        def filename(version=nil)
+          resource_version = version.blank? ? self : (self.find_version(version) || self)
+          "#{sanitized_title}-v#{version}#{file_extension(resource_version)}"
+        end
+
+        def sanitized_title
+          self.title.gsub(/[^\w\.\-]/,'_')
+        end
+
+        def file_extension(record)
+          f = record.file_ext
+          if f.blank? && record.respond_to?(:processor_class) && record.processor_class && record.processor_class.default_file_extension
+            f = record.processor_class.default_file_extension
+          end
+          f ||= 'txt'
+
+          ".#{f}"
+        end
+
+
       end
     end
   end

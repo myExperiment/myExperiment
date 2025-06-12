@@ -26,7 +26,7 @@
 
         <div class="actions">
           <%= icon "show", blob_path(blob), nil, nil, "View" %>
-          <% if Authorization.check("download", blob, current_user) %><%= icon "download", download_blob_path(blob) %><% end %>
+          <% if Authorization.check("download", blob, current_user) %><%= icon "download", blob.named_download_url %><% end %>
           <% if mine?(blob) %><%= icon "manage", edit_blob_path(blob), nil, nil, "Manage" %><% end %>
         </div>
 

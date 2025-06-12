@@ -113,8 +113,8 @@ class Pack < ActiveRecord::Base
   
   def archive_file(no_timestamp=false)
     # the name of the zip file, where contents of current pack will be placed
-    filename =  "[PACK] #{self.title.gsub(/[^\w\.\-]/,'_').downcase}"
-    filename += (no_timestamp ? "*" :  " - #{Time.now.strftime('%Y-%m-%d @ %H%M')}")
+    filename =  "pack_#{self.title.gsub(/[^\w\.\-]/,'_').downcase}"
+    filename += (no_timestamp ? "*" :  " - #{updated_at.strftime('%Y-%m-%d @ %H%M')}")
     filename += ".zip"
     return filename
   end
@@ -123,8 +123,11 @@ class Pack < ActiveRecord::Base
     # "#{Conf.base_uri}/packs/#{id}/download/pack_#{id}.zip"
     return(Pack.archive_folder + "/" + archive_file(no_timestamp))
   end
-  
-  
+
+  def named_download_url
+    "/#{self.class.name.underscore.pluralize}/#{id}/download/#{archive_file}"
+  end
+
   def create_zip(user, list_images_hash)
     
     # VARIABLE DECLARATIONS

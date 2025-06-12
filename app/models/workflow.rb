@@ -148,10 +148,6 @@ class Workflow < ActiveRecord::Base
     end
   end
 
-  def sanitized_title
-    self.title.gsub(/[^\w\.\-]/,'_')
-  end
-
 
   
   def self.extract_metadata(opts = {})
@@ -276,25 +272,6 @@ class Workflow < ActiveRecord::Base
     return nil unless version_processor = get_workflow_processor(version)
 
     return version_processor.get_workflow_model_input_ports
-  end
-
-  def filename(version=nil)
-    workflow_version = version.blank? ? self : (self.find_version(version) || self)
-    "#{sanitized_title}-v#{version}#{file_extension(workflow_version)}"
-  end
-
-  def file_extension(record)
-    f = record.file_ext
-    if f.blank? && record.processor_class && record.processor_class.default_file_extension
-      f = record.processor_class.default_file_extension
-    end
-    f ||= 'txt'
-
-    ".#{f}"
-  end
-  
-  def named_download_url(version = nil)
-    "#{Conf.base_uri}/workflows/#{id}/download/#{filename(version)}"
   end
 
   def get_all_search_terms

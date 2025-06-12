@@ -82,7 +82,7 @@
 			<h4>
 				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss), "float: right;" %>
 				<% if @authorised_to_download %>
-				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", download_pack_path(@pack), "float: right; margin-right: 0.5em;" -%>
+				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", @pack.named_download_url, "float: right; margin-right: 0.5em;" -%>
 				<% end %>
 				
 				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
@@ -115,7 +115,7 @@
 			
 			<% if @authorised_to_download %>
 				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('pack', download_pack_path(@pack), "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
+					<li style="margin-left: 0;"><%= icon('pack', @pack.named_download_url, "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
 				</ul>
 			<% else %>
 				<p class="none_text">

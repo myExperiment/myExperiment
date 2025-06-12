@@ -99,8 +99,8 @@ class Blob < ActiveRecord::Base
     boost
   end
 
-  def named_download_url
-    "#{Conf.base_uri}/files/#{id}/download/#{local_name}"
+  def filename(version = current_version)
+    find_version(version).local_name
   end
 
   def statistics_for_rest_api

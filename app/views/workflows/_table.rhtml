@@ -40,7 +40,7 @@
       </span>
       <ul class="inline sectionIcons">
 	      <% if Authorization.check("download", workflow, current_user) -%>
-		      <li><%= icon "download", download_workflow_path(workflow), nil, nil %></li>
+		      <li><%= icon "download", workflow.named_download_url, nil, nil %></li>
                 <% if ( session[:callback] && (session[:callback][:types].include?(workflow.content_type_id))) -%>
                         <li><%= icon "download", callback_url(workflow).to_s, nil, {:rel => 'nofollow'}, session[:callback][:label] -%></li>
 	        <% end %>

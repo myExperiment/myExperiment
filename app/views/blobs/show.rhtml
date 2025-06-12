@@ -106,7 +106,7 @@
 			
 			<% if Authorization.check('download', @blob, current_user) %>
 				<ul class="sectionIcons">
-					<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
+					<li><%= icon('blob', @blob.named_download_url(@version.version), "Download File", nil, "Download File") %></li>
 				</ul>
 			<% else %>
 				<p class="none_text">

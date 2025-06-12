@@ -113,6 +113,13 @@ ActionController::Routing::Routes.draw do |map|
   map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
   map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
 
+  # Nice download URLs
+  map.download_workflow_version  '/workflows/:id/versions/:version/download/:name', :conditions => { :method => :get }, :controller => 'workflows', :action => 'download', :requirements => { :name => /.*/ }
+  map.download_blob_version  '/blobs/:id/versions/:version/download/:name', :conditions => { :method => :get }, :controller => 'blobs', :action => 'download', :requirements => { :name => /.*/ }
+
+  # Can't download specific pack versions!
+  map.download_named_pack  '/packs/:id/download/:name', :conditions => { :method => :get }, :controller => 'packs', :action => 'download', :requirements => { :name => /.*/ }
+
   # versioned preview images
   ['workflow'].each do |x|
 

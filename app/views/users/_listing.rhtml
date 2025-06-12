@@ -21,8 +21,6 @@
           <%= icon "friendship", new_user_friendship_path(:user_id => user.id), nil, nil, "Request Friendship" %>
         <% end %>
 
-        <%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Message" %>
-
         <% if logged_in? && this_user_is_friend_of_current_user %>
           <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(user.id) %>
           <%= icon "friend_delete", user_friendship_path(current_user, friendship_obj) + "?return_to=" + currentusers_things_url('friends'), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %>
@@ -65,19 +63,6 @@
       <% end %>
 
       <% if user.profile %>
-        <% separator ="" %>
-        <p>
-          <% unless user.profile.website.blank? %>
-            <b>Website:</b><%= link_to h(user.profile.website), h(user.profile.website), :rel => "nofollow", :popup => true %>
-            <% separator = "|" %>
-          <% end %>
-
-          <% unless user.profile.email.blank? %>
-            <%= separator %>
-            <b>Email (public):</b><%= mail_to user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
-          <% end %>
-        </p>
-
         <% separator ="" %>
         <p>
           <% unless user.profile.field_or_industry.blank? %>

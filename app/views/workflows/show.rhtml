@@ -12,7 +12,7 @@
 
 <ul class="sectionIcons">
   <% if @authorised_to_download %>
-      <li><%= icon('download', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
+      <li><%= icon('download', @workflow.named_download_url(@viewing_version_number), "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
       <% if @workflow.content_type.try(:title) == "Taverna 2" &&
               Conf.enable_online_hpc &&
               @workflow.current_version == @viewing_version_number %>

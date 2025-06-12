@@ -710,7 +710,7 @@ protected
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
         
-        @named_download_url = url_for @workflow.named_download_url(@viewing_version_number) + "?version=#{@viewing_version_number.to_s}" 
+        @named_download_url = url_for @workflow.named_download_url(@viewing_version_number)
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
