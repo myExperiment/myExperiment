@@ -57,15 +57,6 @@
         <% else %>
           <%= render :partial => 'layouts/tab_bar' %>
         <% end %>
-        <% if Conf.solr_enable %>
-            <%= render :partial => "layouts/search" %>
-        <% end %>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <% if logged_in? -%>
-            <%= render :partial => "gadgets/new_object" %>
-        <% end %>
-        <%= render :partial => 'layouts/user_links' %>
       </ul>
     </div><!--/.nav-collapse -->
   </div>
