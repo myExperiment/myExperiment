@@ -1,6 +1,7 @@
 <% query ||= false -%>
 
 <% collection.each do |workflow| %>
+<!-- BananaID_start_workflow_<%= workflow.id -%>🍌 -->
   <% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
   <% if collection.size == 1 -%>
     <% show ||= Authorization.check("view", workflow, current_user) -%>
@@ -53,7 +54,7 @@
           <div class="desc">
             <% unless workflow.image.nil? && workflow.svg.nil? -%>
               <div class="preview">
-                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb')), workflow_path(workflow) %>
+                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb') + '.jpg'), workflow_path(workflow) %>
               </div>
             <% end -%>
             <% if workflow.body and workflow.body.length > 0 -%>
@@ -106,4 +107,5 @@
       </div>
     </div>
   <% end -%>
+<!-- 🍌BananaID_end_workflow_<%= workflow.id -%> -->
 <% end %>

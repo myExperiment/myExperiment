@@ -282,13 +282,13 @@ module ActivitiesHelper
     when "Comment create"
       "<a name='comment_#{activity.objekt.id}'></a>#{activity_text_summary(activity.objekt.comment, :min_chars => min_chars)}"
     when "Workflow create"
-      "<div style='float: left; width: 64px'>#{link_to(image_tag(workflow_version_preview_path(activity.objekt, 1, 'thumb'), :width => 64, :height => 64), workflow_version_path(activity.objekt 1))}</div><div class='activity-text'>#{activity.objekt.body_html}</div>"
+      "<div style='float: left; width: 64px'>#{link_to(image_tag(workflow_version_preview_path(activity.objekt, 1, 'thumb') + '.jpg', :width => 64, :height => 64), workflow_version_path(activity.objekt 1))}</div><div class='activity-text'>#{activity.objekt.body_html}</div>"
     when "WorkflowVersion create"
-      "<div style='float: left; width: 64px'>#{link_to(image_tag(workflow_version_preview_path(activity.objekt.workflow, activity.objekt.version, 'thumb'), :width => 64, :height => 64), workflow_version_path(activity.objekt.workflow, activity.objekt.version))}</div><div class='activity-text'>#{white_list(activity.objekt.revision_comments)}</div>"
+      "<div style='float: left; width: 64px'>#{link_to(image_tag(workflow_version_preview_path(activity.objekt.workflow, activity.objekt.version, 'thumb') + '.jpg', :width => 64, :height => 64), workflow_version_path(activity.objekt.workflow, activity.objekt.version))}</div><div class='activity-text'>#{white_list(activity.objekt.revision_comments)}</div>"
     when "Permission create"
       case activity.auth
       when Workflow
-        "<div><div style='float: left; margin: 6px'>#{link_to(image_tag(workflow_preview_path(activity.auth, 'thumb'), :width => 64, :height => 64), workflow_path(activity.auth))}</div>#{activity_text_summary(activity.auth.body_html, :min_chars => min_chars)}<div style='clear: both'></div></div>"
+        "<div><div style='float: left; margin: 6px'>#{link_to(image_tag(workflow_preview_path(activity.auth, 'thumb') + '.jpg', :width => 64, :height => 64), workflow_path(activity.auth))}</div>#{activity_text_summary(activity.auth.body_html, :min_chars => min_chars)}<div style='clear: both'></div></div>"
       when Blob, Pack
         "<div>#{activity_text_summary(activity.auth.body_html, :min_chars => min_chars)}</div>"
       end

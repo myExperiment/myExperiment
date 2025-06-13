@@ -56,11 +56,11 @@
 
           <div class="contribution_preview" style="width: 100%;">
             <p style="text-align: center">
-              <%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium')), workflow_version_preview_path(@workflow, @viewing_version.version, 'full'), :popup => true %>
+              <%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium') + '.jpg'), workflow_version_preview_path(@workflow, @viewing_version.version, 'full') + '.jpg', :popup => true %>
             </p>
             <% unless @viewing_version.svg.nil? %>
                 <p style="text-align: right; color: #666666;">
-                  <%= link_to 'Download as scalable diagram (SVG)', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg') %>
+                  <%= link_to 'Download as scalable diagram (SVG)', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg') + '.svg' %>
                 </p>
             <% end %>
 

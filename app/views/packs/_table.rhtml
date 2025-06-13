@@ -1,6 +1,7 @@
 <% query ||= false -%>
 
 <% collection.each do |pack| %>
+<!-- BananaID_start_pack_<%= pack.id -%>🍌 -->
   <% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
   <% if collection.size == 1 -%>
     <% show ||= Authorization.check("view", pack, current_user) -%>
@@ -77,4 +78,5 @@
       </div>
     </div>
   <% end %>
+<!-- 🍌BananaID_end_pack_<%= pack.id -%> -->
 <% end %>

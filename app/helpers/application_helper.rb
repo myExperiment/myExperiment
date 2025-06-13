@@ -95,7 +95,7 @@ module ApplicationHelper
     else
       name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
 
-      return link_to(h(name), user_path(user), :title => tooltip_title_attrib(h(user.name)))
+      return "<span data-user-id=\"#{user.id}\">#{h(name)}</span>"
     end
   end
   
@@ -128,7 +128,8 @@ module ApplicationHelper
     end
     
     img = image_tag user.avatar? ? avatar_url(user.profile.picture_id, size) : "avatar.png",
-                    {:title => h(user.name), :class => 'framed',
+                    {:title => h(user.name), :class => 'framed avatar-size',
+                     :style => "max-width: #{size}px; max-height: #{size}px;",
                      :size => user.avatar? ? nil : "#{size}x#{size}"}.merge(image_options)
 
     unless url
@@ -143,11 +144,7 @@ module ApplicationHelper
   end
   
   def avatar_url(picture_id, size=200)
-    url_for(:controller => 'pictures',
-            :action => 'show',
-            :id => picture_id,
-            :size => "#{size}x#{size}",
-            :only_path => true)
+    picture_path(picture_id, ext: 'jpg')
   end
   
   def null_avatar(size=200, alt="Anonymous")

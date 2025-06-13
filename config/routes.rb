@@ -120,6 +120,8 @@ ActionController::Routing::Routes.draw do |map|
   # Can't download specific pack versions!
   map.download_named_pack  '/packs/:id/download/:name', :conditions => { :method => :get }, :controller => 'packs', :action => 'download', :requirements => { :name => /.*/ }
 
+  map.picture  '/pictures/:id.:ext', :conditions => { :method => :get }, :controller => 'pictures', :action => 'show', :requirements => { :ext => /.*/ }
+
   # versioned preview images
   ['workflow'].each do |x|
 
