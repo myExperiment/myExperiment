@@ -1,0 +1,1 @@
+ENV['RAILS_ASSET_ID'] = ''
