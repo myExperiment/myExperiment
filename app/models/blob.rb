@@ -131,4 +131,8 @@ class Blob < ActiveRecord::Base
         :context      => self,
         :content_type => content_type.mime_type)
   end
+
+  def named_download_url(version = current_version)
+    "/files/#{id}/versions/#{version}/download/#{filename(version)}"
+  end
 end
