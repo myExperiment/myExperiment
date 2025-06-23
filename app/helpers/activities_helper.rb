@@ -42,6 +42,10 @@ module ActivitiesHelper
           polymorphic_path(thing)
       end
 
+      if thing.is_a?(User)
+        return h(label)
+      end
+
       link_to(h(label), path)
     else
       h(label)
