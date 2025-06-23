@@ -11,7 +11,7 @@
 		
 		<p style="font-size: 93%; text-align: center;">
 			Copy and paste this link into File > 'Open workflow location...'<br/>
-			<%= link_to @download_url, @download_url %><br/>
+			<%= link_to @named_download_url, @named_download_url %><br/>
 			<small>[ <%= link_to_function "More Info" + expand_image, visual_effect(:toggle_blind, "run_taverna_more_box", :duration => 0.3) -%> ]</small>
 		</p>
 		
