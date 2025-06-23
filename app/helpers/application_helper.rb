@@ -140,7 +140,7 @@ module ApplicationHelper
       img = img + " #{annotation}"
     end
     
-    return link_to(img , url)
+    return img
   end
   
   def avatar_url(picture_id, size=200)
