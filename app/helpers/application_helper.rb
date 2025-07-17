@@ -130,6 +130,7 @@ module ApplicationHelper
     img = image_tag user.avatar? ? avatar_url(user.profile.picture_id, size) : "avatar.png",
                     {:title => h(user.name), :class => 'framed avatar-size',
                      :style => "max-width: #{size}px; max-height: #{size}px;",
+                     'data-avatar-image-user-id' => user.id,
                      :size => user.avatar? ? nil : "#{size}x#{size}"}.merge(image_options)
 
     unless url
