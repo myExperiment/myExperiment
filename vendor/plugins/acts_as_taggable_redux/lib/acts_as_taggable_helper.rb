@@ -52,13 +52,13 @@ module ActsAsTaggableHelper
       
       if original
         unless link_to_type.blank?
-          html << link_to(h(tag.name), tag_path(tag) + "?type=#{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
+          html << link_to(h(tag.name), tag_path(tag) + "##{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
         else
           html << link_to(h(tag.name), tag_path(tag), :class => classes[(tag.taggings_count - min) / divisor])
         end
       else
         unless link_to_type.blank?
-          html << "<a href='#{tag_path(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
+          html << "<a href='#{tag_path(Tag.find(:first, :conditions => ["name = ?", tag.name]))}##{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         else
           html << "<a href='#{tag_path(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         end
