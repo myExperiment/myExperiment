@@ -66,9 +66,11 @@
 
         <p class="standout">
           <%= pluralize network.shared_contributions.length, "shared item" -%>
+          <% if false %>
           &nbsp;&nbsp;|&nbsp;&nbsp;
           <% # both private & public announcements -%>
           <%= pluralize network.announcements.length, "announcements" -%>
+          <% end %>
         </p>
 
         <% unless network.members.empty? -%>
@@ -85,12 +87,14 @@
           <p><i>This Group has not been tagged yet!</i></p>
         <% end -%>
       <% end -%>
+      <% if false %>
       <% latest_announcement = network.announcements_for_user(current_user).first -%>
       <% unless latest_announcement.nil? -%>
         <p style="margin-top: 0.7em;">
           <b>Latest announcement:</b>:
           <%= link_to latest_announcement.title, group_announcement_path(network, latest_announcement) -%>
         </p>
+      <% end -%>
       <% end -%>
     </div>
   </div>

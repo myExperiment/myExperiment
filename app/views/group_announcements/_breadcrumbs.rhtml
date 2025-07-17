@@ -1,6 +1,6 @@
 <li><%= link_to 'Groups', networks_path -%></li>
 <li><b><%= link_to h(@group.title), network_path(@group) -%></b></li>
-<li><b><%= link_to "Group Announcements", group_announcements_path(@group) -%></b>
+<li><b>Group Announcements<%# link_to "Group Announcements", group_announcements_path(@group) -%></b>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <% case controller.action_name.to_s; when "show" -%>

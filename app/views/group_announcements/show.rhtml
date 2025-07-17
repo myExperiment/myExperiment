@@ -1,5 +1,7 @@
 <ul class="sectionIcons">
+	<% if false %>
   <li><%= icon('announcement', group_announcements_path(@group), "Return to All Announcements", nil, 'Return to All Announcements') %></li>
+	<% end %>
 	<% if (current_user != 0) && @group.owner?(current_user) %>
 	  <li><%= icon('edit', edit_group_announcement_path(@group, @announcement), nil, nil, 'Edit') %></li>
 		<li>

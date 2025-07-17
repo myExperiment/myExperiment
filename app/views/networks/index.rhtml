@@ -19,7 +19,7 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
-<% unless (recent = Network.recently_created).empty? %>
+<% unless true || (recent = Network.recently_created).empty? %>
   <div class="tabContainer">
   	<div class="tabTitle">Most Recent</div>
   	<div class="tabContent">
